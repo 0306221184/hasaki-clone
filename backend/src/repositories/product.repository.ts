@@ -10,8 +10,7 @@ export default class ProductRepository {
     category_name,
     rating,
     image_url,
-    color_variants,
-    size_variants,
+    variants,
     tags,
   }: {
     name: string;
@@ -22,8 +21,7 @@ export default class ProductRepository {
     category_name: string;
     rating?: number;
     image_url?: string;
-    color_variants?: string;
-    size_variants?: string;
+    variants?: string;
     tags?: string;
   }) => {
     try {
@@ -36,8 +34,7 @@ export default class ProductRepository {
         category_name,
         rating,
         image_url,
-        color_variants,
-        size_variants,
+        variants,
         tags,
       });
       return productCreated;
@@ -52,8 +49,7 @@ export default class ProductRepository {
       });
       return {
         ...product,
-        color_variants: JSON.parse(product.color_variants),
-        size_variants: JSON.parse(product.size_variants),
+        variants: JSON.parse(product.variants),
       };
     } catch (error) {
       throw error;
@@ -66,16 +62,14 @@ export default class ProductRepository {
         products = products.map((product) => {
           return {
             ...product,
-            color_variants: JSON.parse(product.color_variants),
-            size_variants: JSON.parse(product.size_variants),
+            variants: JSON.parse(product.variants),
           };
         });
       }
       if (products && !Array.isArray(products)) {
         return {
           ...products,
-          color_variants: JSON.parse(products.color_variants),
-          size_variants: JSON.parse(products.size_variants),
+          variants: JSON.parse(products.variants),
         };
       }
       return products;
@@ -114,8 +108,7 @@ export default class ProductRepository {
       category_name,
       rating,
       image_url,
-      color_variants,
-      size_variants,
+      variants,
       tags,
     }: {
       name?: string;
@@ -126,8 +119,7 @@ export default class ProductRepository {
       category_name?: string;
       rating?: number;
       image_url?: string;
-      color_variants?: string;
-      size_variants?: string;
+      variants?: string;
       tags?: string;
     }
   ) => {
@@ -142,8 +134,7 @@ export default class ProductRepository {
         category_name,
         rating,
         image_url,
-        color_variants,
-        size_variants,
+        variants,
         tags,
       });
       return productUpdated;
