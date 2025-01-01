@@ -96,4 +96,85 @@ export default class AuthController {
       next(error);
     }
   };
+  public requestResetPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { email } = req.body;
+      const resetPasswordResult = await this.authServices.requestResetPassword(
+        email
+      );
+      if (resetPasswordResult) {
+        res.status(StatusCode.OK).json({
+          status: "OK",
+          message: "OTP sent to your email.",
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+  public resetPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { email, otp, newPassword } = req.body;
+      const resetPasswordResult = await this.authServices.resetPassword(
+        email,
+        otp,
+        newPassword
+      );
+      if (resetPasswordResult) {
+        res.status(StatusCode.OK).json({
+          status: "OK",
+          message: "Password reset successful",
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+  //verify email
+  public requestVerifyEmail = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { email } = req.body;
+      const verifyEmailResult = await this.authServices.requestVerifyEmail(
+        email
+      );
+      if (verifyEmailResult) {
+        res.status(StatusCode.OK).json({
+          status: "OK",
+          message: "Verify send to your email.",
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+  public verifyEmail = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { email, code } = req.query;
+      const verifyEmailResult = await this.authServices.verifyEmail(
+        email,
+        code
+      );
+      if (verifyEmailResult) {
+        res.status(StatusCode.OK).send(`<h1>Email verify successfully!!</h1>`);
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
 }

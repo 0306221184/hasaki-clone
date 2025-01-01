@@ -8,8 +8,8 @@ type QueryParts = {
   limit?: number;
 };
 
-export default class QueryBuilder {
-  private static instance: QueryBuilder;
+export default class SelectBuilder {
+  private static instance: SelectBuilder;
   private parts: QueryParts = {};
   private executed: boolean = false;
 
@@ -19,11 +19,11 @@ export default class QueryBuilder {
   /**
    * Get the singleton instance of QueryBuilder
    */
-  public static getInstance(): QueryBuilder {
-    if (!QueryBuilder.instance) {
-      QueryBuilder.instance = new QueryBuilder();
+  public static getInstance(): SelectBuilder {
+    if (!SelectBuilder.instance) {
+      SelectBuilder.instance = new SelectBuilder();
     }
-    return QueryBuilder.instance;
+    return SelectBuilder.instance;
   }
 
   /**
@@ -35,7 +35,7 @@ export default class QueryBuilder {
     return this;
   }
 
-  select(fields: string[]): Omit<QueryBuilder, "select"> {
+  select(fields: string[]): Omit<SelectBuilder, "select"> {
     if (this.parts.select || this.parts.from || this.executed) {
       throw new Error("'select()' must be called first, and only once.");
     }
@@ -43,7 +43,7 @@ export default class QueryBuilder {
     return this;
   }
 
-  from(table: string): Omit<QueryBuilder, "from"> {
+  from(table: string): Omit<SelectBuilder, "from"> {
     if (!this.parts.select) {
       throw new Error("'select()' must be called before 'from()'.");
     }
