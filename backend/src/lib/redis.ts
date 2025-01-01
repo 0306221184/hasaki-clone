@@ -32,6 +32,17 @@ class RedisClient {
       throw error;
     }
   }
+  public async setEx(
+    key: string,
+    ex: string | number,
+    value: string
+  ): Promise<string> {
+    try {
+      return await this.client.setex(key, ex, value);
+    } catch (error) {
+      throw error;
+    }
+  }
 
   public async get(key: string): Promise<string | null> {
     try {

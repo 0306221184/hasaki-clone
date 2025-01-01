@@ -15,6 +15,18 @@ class AuthRoute implements IRoute {
   private initializeRoutes() {
     //Register
     this.router.post("/auth/register", this.controller.register);
+    //Reset password
+    this.router.post(
+      "/auth/request-reset-password",
+      this.controller.requestResetPassword
+    );
+    this.router.post("/auth/reset-password", this.controller.resetPassword);
+    //Verify email
+    this.router.post(
+      "/auth/request-verify-email",
+      this.controller.requestVerifyEmail
+    );
+    this.router.get("/auth/verify-email", this.controller.verifyEmail);
     //google login
     this.router.get(
       "/auth/google/login",

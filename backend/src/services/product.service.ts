@@ -1,5 +1,4 @@
 import ProductRepository from "../repositories/product.repository";
-import { Product } from "../types/product.type";
 
 export default class ProductService {
   private readonly repository: ProductRepository;
