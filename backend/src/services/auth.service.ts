@@ -3,6 +3,8 @@ import { userJwtPayload } from "../types/user.jwtPayload.type";
 import { UserAlreadyExistException } from "../utils/auth.exception";
 import TokenUtilities from "../utils/token.util";
 import AuthRepository from "../repositories/auth.repository";
+import RedisClient from "../lib/redis";
+import ResendService from "../lib/resend.provider";
 
 export default class AuthService {
   private readonly repository: AuthRepository;
@@ -50,4 +52,97 @@ export default class AuthService {
       throw error;
     }
   }
+  public requestResetPassword = async (email) => {
+    try {
+      const user = await this.repository.checkExistUserByEmail(email);
+      if (user) {
+        throw new Error(`User ${email} does not exist`);
+      }
+      const otp = Math.floor(1000 + Math.random() * 9000).toString();
+      const redisKey = `reset-password:otp:${email}`;
+      await RedisClient.getInstance().setEx(redisKey, 600, otp);
+      await ResendService.getInstance().sendMail(
+        email,
+        `Your OTP for password reset is: ${otp}`,
+        "Password Reset OTP"
+      );
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  };
+  public resetPassword = async (email, otp, newPassword) => {
+    try {
+      const redisKey = `reset-password:otp:${email}`;
+      const savedOtp = await RedisClient.getInstance().get(redisKey);
+
+      if (!savedOtp || savedOtp != otp) {
+        throw new Error("Invalid or expired OTP.");
+      }
+      const hashedPassword = await Bcrypt.getInstance().hashPassword(
+        newPassword,
+        10
+      );
+      const user = await this.repository.getUserByEmail(email);
+      const updateUserPassword = await this.repository.updateUserById(
+        Number(user?.id),
+        {
+          password: hashedPassword,
+        }
+      );
+      await RedisClient.getInstance().delete(redisKey);
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  };
+  //verify email service
+  public requestVerifyEmail = async (email) => {
+    try {
+      const user = await this.repository.getUserByEmail(email);
+      if (!user) {
+        throw new Error(`User ${email} does not exist`);
+      }
+      if (user && user?.is_email_verified) {
+        throw new Error(`User ${email} already verified`);
+      }
+      const verificationCode = Math.floor(
+        1000 + Math.random() * 9000
+      ).toString();
+      const redisKey = `verify:email:${email}`;
+      await RedisClient.getInstance().setEx(redisKey, 600, verificationCode);
+      const verificationLink = `http://localhost:3000/api/v1/auth/verify-email?email=${encodeURIComponent(
+        email
+      )}&code=${verificationCode}`;
+      await ResendService.getInstance().sendMail(
+        email,
+        `Verify your email by clicking the link: ${verificationLink}`,
+        "Verify email"
+      );
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  };
+  public verifyEmail = async (email, code) => {
+    try {
+      const redisKey = `verify:email:${email}`;
+      const storedCode = await RedisClient.getInstance().get(redisKey);
+
+      if (!storedCode || storedCode != code) {
+        throw new Error("Invalid or expired verification code.");
+      }
+      const user = await this.repository.getUserByEmail(email);
+      const updateUserPassword = await this.repository.updateUserById(
+        Number(user?.id),
+        {
+          isEmailVerified: true,
+        }
+      );
+      await RedisClient.getInstance().delete(redisKey);
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  };
 }

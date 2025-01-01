@@ -111,7 +111,6 @@ export default class AuthRepository {
     avatar = null,
     fullName = null,
     phoneNumber = null,
-    address = null,
     provider = null,
     providerId = null,
     lastLogin = false,
@@ -126,7 +125,6 @@ export default class AuthRepository {
     avatar?: String | null;
     fullName?: String | null;
     phoneNumber?: String | null;
-    address?: String | null;
     provider?: String | null;
     providerId?: String | null;
     lastLogin?: Boolean;
@@ -143,7 +141,6 @@ export default class AuthRepository {
         avatar: avatar,
         full_name: fullName,
         phone_number: phoneNumber,
-        address: address,
         provider: provider,
         provider_id: providerId,
         is_email_verified: isEmailVerified,

@@ -7,6 +7,8 @@ import { IRoute } from "./interfaces/route.interface";
 import ErrorMiddleWare from "./middlewares/error.middleware";
 import expressListRoutes from "express-list-routes";
 import passport from "./config/passport.config";
+import RabbitMQClient from "./lib/rabbitMq_client";
+import { RB_TEST_QUEUE } from "./config/rabbitMQ.config";
 export default class App {
   public app: Application;
   public port: string | number;

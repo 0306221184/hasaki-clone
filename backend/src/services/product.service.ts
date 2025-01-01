@@ -1,5 +1,4 @@
 import ProductRepository from "../repositories/product.repository";
-import { Product } from "../types/product.type";
 
 export default class ProductService {
   private readonly repository: ProductRepository;
@@ -15,8 +14,7 @@ export default class ProductService {
     category_name,
     rating,
     image_url,
-    color_variants,
-    size_variants,
+    variants,
     tags,
   }: {
     name: string;
@@ -27,8 +25,7 @@ export default class ProductService {
     category_name: string;
     rating?: number;
     image_url?: string;
-    color_variants?: string;
-    size_variants?: string;
+    variants?: string;
     tags?: string;
   }) => {
     try {
@@ -41,8 +38,7 @@ export default class ProductService {
         category_name,
         rating,
         image_url,
-        color_variants,
-        size_variants,
+        variants,
         tags,
       });
       return productCreated;
@@ -93,8 +89,7 @@ export default class ProductService {
       category_name,
       rating,
       image_url,
-      color_variants,
-      size_variants,
+      variants,
       tags,
     }: {
       name?: string;
@@ -105,8 +100,7 @@ export default class ProductService {
       category_name?: string;
       rating?: number;
       image_url?: string;
-      color_variants?: string;
-      size_variants?: string;
+      variants?: string;
       tags?: string;
     }
   ) => {
@@ -120,8 +114,7 @@ export default class ProductService {
         category_name,
         rating,
         image_url,
-        color_variants,
-        size_variants,
+        variants,
         tags,
       });
       return product;

@@ -24,8 +24,7 @@ export default class ProductController {
         rating,
         image_url,
         tags,
-        color_variants,
-        size_variants,
+        variants,
       } = req.body;
 
       const productCreated = await this.productService.createProduct({
@@ -38,12 +37,7 @@ export default class ProductController {
         rating,
         image_url,
         tags,
-        color_variants: color_variants
-          ? JSON.stringify(color_variants)
-          : color_variants,
-        size_variants: size_variants
-          ? JSON.stringify(size_variants)
-          : size_variants,
+        variants: variants ? JSON.stringify(variants) : variants,
       });
       res.status(StatusCodes.OK).json({
         status: "OK",
@@ -142,8 +136,7 @@ export default class ProductController {
         category_name,
         rating,
         image_url,
-        color_variants,
-        size_variants,
+        variants,
         tags,
       } = req.body;
       const product = await this.productService.updateOneProduct(id, {
@@ -155,8 +148,7 @@ export default class ProductController {
         category_name,
         rating,
         image_url,
-        color_variants: JSON.stringify(color_variants),
-        size_variants: JSON.stringify(size_variants),
+        variants: JSON.stringify(variants),
         tags,
       });
       res.status(StatusCodes.OK).json({
