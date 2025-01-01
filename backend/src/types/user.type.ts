@@ -1,0 +1,20 @@
+export type User = {
+  id: number;
+  username?: string;
+  email: string;
+  password: string;
+  access_token?: string;
+  refresh_token?: string;
+  role_id: number;
+  avatar?: string;
+  full_name?: string;
+  phone_number?: string;
+  address?: string;
+  is_disabled: boolean;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
+  provider?: string;
+  provider_id?: string;
+  is_email_verified: boolean;
+};
