@@ -4,7 +4,7 @@ import 'login_screen.dart'; // Nhớ kiểm tra lại đường dẫn của Logi
 import 'dart:async';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -147,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _timeRemaining = 60;
 
     // Bắt đầu hẹn giờ
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_timeRemaining > 0) {
         setState(() {
           _timeRemaining--;
@@ -175,8 +175,9 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _showDialog(String message, {bool resetFields = false}) {
-    if (_isDialogVisible)
+    if (_isDialogVisible) {
       return; // Nếu dialog đã hiển thị, không mở thêm dialog mới
+    }
 
     setState(() {
       _isDialogVisible = true; // Đánh dấu dialog là đang hiển thị
@@ -256,7 +257,7 @@ class _RegisterPageState extends State<RegisterPage> {
       _showDialog('Mã xác nhận sẽ được gửi tới email.');
 
       // Chờ một chút trước khi hiển thị dialog nhập mã xác nhận
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 2), () {
         _sendVerificationCode();
         _showCodeDialog();
       });

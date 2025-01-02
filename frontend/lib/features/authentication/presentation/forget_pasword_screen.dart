@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart'; // Đảm bảo login_screen.dart có trang đăng ký của bạn
 
 class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({Key? key}) : super(key: key);
+  const ForgotPasswordPage({super.key});
 
   @override
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
@@ -91,9 +91,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             );
                           }
                         },
-                  child: _isLoading
-                      ? CircularProgressIndicator(color: Colors.white)
-                      : const Text('Gửi mã xác nhận'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(
@@ -102,9 +99,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  child: _isLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : const Text('Gửi mã xác nhận'),
                 ),
                 const SizedBox(height: 10),
-                Text('Vui lòng cung cấp địa chỉ email để lấy lại mật khẩu'),
+                const Text(
+                    'Vui lòng cung cấp địa chỉ email để lấy lại mật khẩu'),
               ],
             ),
           ),
@@ -115,6 +116,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 }
 
 class VerificationCodePage extends StatefulWidget {
+  const VerificationCodePage({super.key});
+
   @override
   _VerificationCodePageState createState() => _VerificationCodePageState();
 }
@@ -178,7 +181,6 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                       );
                     }
                   },
-                  child: const Text('Tiếp tục'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(
@@ -187,6 +189,7 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  child: const Text('Tiếp tục'),
                 ),
               ],
             ),
@@ -198,6 +201,8 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
 }
 
 class ResetPasswordPage extends StatefulWidget {
+  const ResetPasswordPage({super.key});
+
   @override
   _ResetPasswordPageState createState() => _ResetPasswordPageState();
 }
@@ -308,7 +313,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _resetPassword,
-                  child: const Text('Cập nhật mật khẩu'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(
@@ -317,6 +321,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  child: const Text('Cập nhật mật khẩu'),
                 ),
               ],
             ),

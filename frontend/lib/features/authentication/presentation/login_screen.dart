@@ -3,7 +3,7 @@ import 'register_screen.dart';
 import 'forget_pasword_screen.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -240,7 +240,7 @@ class _LoginPageState extends State<LoginPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  ForgotPasswordPage(), // Điều hướng đến trang ForgotPasswordPage
+                                  const ForgotPasswordPage(), // Điều hướng đến trang ForgotPasswordPage
                             ),
                           );
                         },
