@@ -450,9 +450,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     _acceptPromotions = value;
                   });
                 },
+                activeColor: Colors.blue, // Đặt màu xanh khi switch được bật
                 title: const Text('Nhận thông tin khuyến mãi qua email'),
               ),
               const SizedBox(height: 10),
+
               // Đồng ý điều khoản
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
