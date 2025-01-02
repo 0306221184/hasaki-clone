@@ -13,6 +13,10 @@ export default class AuthService {
   }
   async register(email, password) {
     try {
+      // const [hashPassword, isExistUser] = await Promise.all([
+      //   Bcrypt.getInstance().hashPassword(password),
+      //   this.repository.checkExistUserByEmail(email),
+      // ]);
       const hashPassword = await Bcrypt.getInstance().hashPassword(password);
       const isExistUser = await this.repository.checkExistUserByEmail(email);
 
@@ -74,15 +78,19 @@ export default class AuthService {
   public resetPassword = async (email, otp, newPassword) => {
     try {
       const redisKey = `reset-password:otp:${email}`;
-      const savedOtp = await RedisClient.getInstance().get(redisKey);
-
+      const [savedOtp, hashedPassword] = await Promise.all([
+        RedisClient.getInstance().get(redisKey),
+        Bcrypt.getInstance().hashPassword(newPassword, 10),
+      ]);
+      // const savedOtp = await RedisClient.getInstance().get(redisKey);
+      // const hashedPassword = await Bcrypt.getInstance().hashPassword(
+      //   newPassword,
+      //   10
+      // );
       if (!savedOtp || savedOtp != otp) {
         throw new Error("Invalid or expired OTP.");
       }
-      const hashedPassword = await Bcrypt.getInstance().hashPassword(
-        newPassword,
-        10
-      );
+
       const user = await this.repository.getUserByEmail(email);
       const updateUserPassword = await this.repository.updateUserById(
         Number(user?.id),

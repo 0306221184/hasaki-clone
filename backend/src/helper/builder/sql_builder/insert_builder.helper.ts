@@ -46,7 +46,7 @@ export default class InsertBuilder {
   /**
    * Add a single or multiple rows of values for the insert statement
    */
-  public values(...rows: (string | number | null)[][]): this {
+  public values(rows: (string | number | null | any)[][]): this {
     rows.forEach((row) => {
       if (row.length !== this.columns.length) {
         throw new Error(

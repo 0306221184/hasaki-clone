@@ -16,6 +16,7 @@ export default class ProductService {
     image_url,
     variants,
     tags,
+    sub_images_url,
   }: {
     name: string;
     description?: string;
@@ -27,6 +28,7 @@ export default class ProductService {
     image_url?: string;
     variants?: string;
     tags?: string;
+    sub_images_url?: string[];
   }) => {
     try {
       const productCreated = await this.repository.createProduct({
@@ -40,6 +42,7 @@ export default class ProductService {
         image_url,
         variants,
         tags,
+        sub_images_url,
       });
       return productCreated;
     } catch (error) {

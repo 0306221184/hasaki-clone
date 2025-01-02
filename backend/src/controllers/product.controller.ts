@@ -25,6 +25,7 @@ export default class ProductController {
         image_url,
         tags,
         variants,
+        sub_images_url,
       } = req.body;
 
       const productCreated = await this.productService.createProduct({
@@ -38,6 +39,7 @@ export default class ProductController {
         image_url,
         tags,
         variants: variants ? JSON.stringify(variants) : variants,
+        sub_images_url,
       });
       res.status(StatusCodes.OK).json({
         status: "OK",

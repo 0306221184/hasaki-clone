@@ -36,6 +36,7 @@ export default class SelectBuilder {
   }
 
   select(fields: string[]): Omit<SelectBuilder, "select"> {
+    this.reset();
     if (this.parts.select || this.parts.from || this.executed) {
       throw new Error("'select()' must be called first, and only once.");
     }
