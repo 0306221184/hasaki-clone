@@ -12,16 +12,32 @@ import {
 import { TokenNotFoundException } from "../utils/token.exception";
 import TokenUtilities from "../utils/token.util";
 
+/**
+ * AuthMiddleware class provides authentication and authorization functionalities for the application.
+ */
 export default class AuthMiddleware {
   private static instance: AuthMiddleware | null = null;
+
   private constructor() {}
 
+  /**
+   * Returns the singleton instance of AuthMiddleware.
+   * @returns {AuthMiddleware} - The singleton instance of AuthMiddleware.
+   */
   public static getInstance(): AuthMiddleware {
     if (this.instance == null) {
       this.instance = new AuthMiddleware();
     }
     return this.instance;
   }
+
+  /**
+   * Middleware function for authentication.
+   * Validates access and refresh tokens, updates tokens in the database, and attaches user object to the request.
+   * @param {Request} req - The Express request object.
+   * @param {Response} res - The Express response object.
+   * @param {NextFunction} next - The Express next middleware function.
+   */
   public async authentication(req: Request, res: Response, next: NextFunction) {
     try {
       const token = req?.headers?.authorization?.split(" ")[1];
@@ -100,6 +116,14 @@ export default class AuthMiddleware {
       return next(error);
     }
   }
+
+  /**
+   * Middleware function for authorization.
+   * Checks if the user has the required permissions and performs ownership check if provided.
+   * @param {String[]} permissions - The required permissions for the route.
+   * @param {(req: Request) => boolean} ownershipCheck - Optional ownership check function.
+   * @returns {(req: Request, res: Response, next: NextFunction) => Promise<void>} - The middleware function.
+   */
   public hasPermissions(
     permissions: String[],
     ownershipCheck?: (req: Request) => boolean

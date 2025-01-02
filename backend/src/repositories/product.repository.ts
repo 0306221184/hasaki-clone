@@ -1,5 +1,7 @@
 import { Database } from "../lib/database/database";
 import { Product } from "../types/product.type";
+import InsertBuilder from "../helper/builder/sql_builder/insert_builder.helper";
+import SelectBuilder from "../helper/builder/sql_builder/select_builder.helper";
 export default class ProductRepository {
   public createProduct = async ({
     name,
@@ -12,6 +14,7 @@ export default class ProductRepository {
     image_url,
     variants,
     tags,
+    sub_images_url,
   }: {
     name: string;
     description?: string;
@@ -23,6 +26,7 @@ export default class ProductRepository {
     image_url?: string;
     variants?: string;
     tags?: string;
+    sub_images_url?: string[];
   }) => {
     try {
       const productCreated = await Database.mssql().execProc("CreateProduct", {
@@ -37,7 +41,35 @@ export default class ProductRepository {
         variants,
         tags,
       });
-      return productCreated;
+      if (productCreated && sub_images_url) {
+        const valuesInsert = sub_images_url?.map((url) => {
+          return [productCreated?.id, url];
+        });
+
+        const insertToProductSubImagesSql = InsertBuilder.getInstance()
+          .into("product_images")
+          .column(["product_id", "image_url"])
+          .values(valuesInsert)
+          .buildSqlServerInsert();
+        const addSubImagesToProduct = await Database.mssql().query(
+          insertToProductSubImagesSql
+        );
+        const selectSubImagesProductSql = SelectBuilder.getInstance()
+          .select(["image_url"])
+          .from("product_images")
+          .where(`product_id=${productCreated?.id}`)
+          .buildSqlServerQuery();
+
+        const subProductImages = await Database.mssql().query(
+          selectSubImagesProductSql
+        );
+        const result = {
+          ...productCreated,
+          sub_images_products: subProductImages.map((item) => item?.image_url),
+        };
+        return result;
+      }
+      return null;
     } catch (error) {
       throw error;
     }
@@ -47,9 +79,19 @@ export default class ProductRepository {
       const product = await Database.mssql().execProc("FindUniqueProduct", {
         id: id,
       });
+      const selectSubImagesProductSql = SelectBuilder.getInstance()
+        .select(["image_url"])
+        .from("product_images")
+        .where(`product_id=${product?.id}`)
+        .buildSqlServerQuery();
+
+      const subProductImages = await Database.mssql().query(
+        selectSubImagesProductSql
+      );
       return {
         ...product,
         variants: JSON.parse(product.variants),
+        sub_images_products: subProductImages.map((item) => item?.image_url),
       };
     } catch (error) {
       throw error;
@@ -57,7 +99,8 @@ export default class ProductRepository {
   };
   public getManyProducts = async () => {
     try {
-      let products = await Database.mssql().execProc("FindManyProducts");
+      let products = await Database.mssql().execProc("FindManyProducts", {});
+
       if (products && products.length > 0) {
         products = products.map((product) => {
           return {
@@ -137,7 +180,20 @@ export default class ProductRepository {
         variants,
         tags,
       });
-      return productUpdated;
+      const selectSubImagesProductSql = SelectBuilder.getInstance()
+        .select(["image_url"])
+        .from("product_images")
+        .where(`product_id=${productUpdated?.id}`)
+        .buildSqlServerQuery();
+
+      const subProductImages = await Database.mssql().query(
+        selectSubImagesProductSql
+      );
+      return {
+        ...productUpdated,
+        variants: JSON.parse(productUpdated.variants),
+        sub_images_products: subProductImages.map((item) => item?.image_url),
+      };
     } catch (error) {
       throw error;
     }

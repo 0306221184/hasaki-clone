@@ -174,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                child: Image.asset('assets/Logo_doria.png', fit: BoxFit.cover),
+                child: Image.asset('assets/Logo_doria.jpg', fit: BoxFit.cover),
               ),
               const SizedBox(height: 15),
               ElevatedButton.icon(
