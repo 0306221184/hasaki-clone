@@ -517,12 +517,10 @@ class _RegisterPageState extends State<RegisterPage> {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushNamedAndRemoveUntil(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            const LoginPage(), // Chuyển đến trang đăng nhập
-                      ),
+                      "/",
+                      (route) => true,
                     );
                   },
                   style: TextButton.styleFrom(

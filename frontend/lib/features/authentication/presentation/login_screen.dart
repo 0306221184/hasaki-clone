@@ -236,13 +236,8 @@ class _LoginPageState extends State<LoginPage> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ForgotPasswordPage(), // Điều hướng đến trang ForgotPasswordPage
-                            ),
-                          );
+                          Navigator.pushNamedAndRemoveUntil(context,
+                              '/auth/forgot-password', (route) => true);
                         },
                         child: const Text(
                           'Quên mật khẩu?',
@@ -270,11 +265,10 @@ class _LoginPageState extends State<LoginPage> {
                     TextButton(
                       onPressed: () {
                         // Điều hướng sang trang đăng ký
-                        Navigator.push(
+                        Navigator.pushNamedAndRemoveUntil(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => const RegisterPage(),
-                          ),
+                          "/auth/register",
+                          (route) => true,
                         );
                       },
                       child: const Text(
