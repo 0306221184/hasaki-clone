@@ -81,7 +81,7 @@ export default class InsertBuilder {
           "(" +
           values
             .map((value) =>
-              value === null
+              value === null || value === undefined
                 ? "NULL"
                 : typeof value === "string"
                 ? `'${value}'`
