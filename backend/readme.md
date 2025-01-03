@@ -30,3 +30,4 @@ cancel order if is pending
 review product
 promotion
 wishlist
+notification
