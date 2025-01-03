@@ -2,6 +2,7 @@ import { Router } from "express";
 import ProductController from "../controllers/product.controller";
 import { IRoute } from "../interfaces/route.interface";
 import AuthMiddleware from "../middlewares/auth.middleware";
+import PaginatorMiddleware from "../middlewares/paginator.middleware";
 
 class ProductRoute implements IRoute {
   public router: Router = Router();
@@ -15,7 +16,11 @@ class ProductRoute implements IRoute {
     //POST product
     this.router.post("/product", this.controller.createProduct);
     //GET all products
-    this.router.get("/product", this.controller.getManyProducts);
+    this.router.get(
+      "/product",
+      PaginatorMiddleware.paginate,
+      this.controller.getManyProducts
+    );
     //GET one product
     this.router.get("/product/:productId", this.controller.getOneProduct);
     //DELETE many products

@@ -51,13 +51,9 @@ export default class ProductController {
     }
   };
   //GET
-  public getManyProducts = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  public getManyProducts = async (req, res: Response, next: NextFunction) => {
     try {
-      const products = await this.productService.getManyProducts();
+      const products = req.paginate;
       res.status(StatusCodes.OK).json({
         status: "OK",
         message: "Get all products successfully!!",
