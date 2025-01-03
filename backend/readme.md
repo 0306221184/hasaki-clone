@@ -20,3 +20,13 @@ Quản lý thông tin cá nhân (họ tên, email, ĐT, địa chỉ,…)
 Đánh giá sp đã mua
 Khuyến mãi (theo hình thức hợp lý)
 Whishlist
+
+---
+
+search product
+crud cart
+payment
+cancel order if is pending
+review product
+promotion
+wishlist
