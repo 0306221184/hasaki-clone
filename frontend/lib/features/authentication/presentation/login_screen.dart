@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:frontend/features/authentication/presentation/register_screen.dart';
 import 'package:frontend/features/authentication/presentation/forget_pasword_screen.dart';
+=======
+import 'register_screen.dart';
+import 'forgot_password_screen.dart';
+>>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -130,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                child: Image.asset('assets/Logo_doria.png', fit: BoxFit.cover),
+                child: Image.asset('assets/Logo_doria.jpg', fit: BoxFit.cover),
               ),
               const SizedBox(height: 15),
               ElevatedButton.icon(
@@ -190,7 +195,12 @@ class _LoginPageState extends State<LoginPage> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
+<<<<<<< HEAD
                           Navigator.pushNamed(context, '/forgotPassword');
+=======
+                          Navigator.pushNamedAndRemoveUntil(context,
+                              '/auth/forgot-password', (route) => true);
+>>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
                         },
                         child: const Text(
                           'Quên mật khẩu?',
@@ -217,7 +227,16 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 20),
                     TextButton(
                       onPressed: () {
+<<<<<<< HEAD
                         Navigator.pushNamed(context, '/register');
+=======
+                        // Điều hướng sang trang đăng ký
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          "/auth/register",
+                          (route) => true,
+                        );
+>>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
                       },
                       child: const Text(
                         'Bạn chưa có tài khoản đăng nhập? Đăng ký',

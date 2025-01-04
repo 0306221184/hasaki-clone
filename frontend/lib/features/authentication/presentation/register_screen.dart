@@ -495,8 +495,16 @@ class _RegisterPageState extends State<RegisterPage> {
               Center(
                 child: TextButton(
                   onPressed: () {
+<<<<<<< HEAD
                     Navigator.pushReplacementNamed(
                         context, '/'); // Điều hướng đúng về trang đăng nhập
+=======
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      "/",
+                      (route) => true,
+                    );
+>>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
                   },
                   child: const Text(
                     'Đã có tài khoản? Đăng nhập.',
