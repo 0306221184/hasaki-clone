@@ -495,7 +495,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Center(
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/');
+                    // Navigator.pushReplacementNamed(context, '/');
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       "/",

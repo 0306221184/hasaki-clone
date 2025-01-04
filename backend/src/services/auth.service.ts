@@ -5,26 +5,33 @@ import TokenUtilities from "../utils/token.util";
 import AuthRepository from "../repositories/auth.repository";
 import RedisClient from "../lib/redis";
 import ResendService from "../lib/resend.provider";
+import CartRepository from "../repositories/cart.repository";
+import { PORT } from "../config/env.config";
 
 export default class AuthService {
   private readonly repository: AuthRepository;
+  private readonly cartRepository: CartRepository;
+
   constructor(repository: AuthRepository = new AuthRepository()) {
     this.repository = repository;
+    this.cartRepository = new CartRepository();
   }
+
   async register(email, password) {
     try {
-      // const [hashPassword, isExistUser] = await Promise.all([
-      //   Bcrypt.getInstance().hashPassword(password),
-      //   this.repository.checkExistUserByEmail(email),
-      // ]);
-      const hashPassword = await Bcrypt.getInstance().hashPassword(password);
-      const isExistUser = await this.repository.checkExistUserByEmail(email);
+      const [hashPassword, isExistUser] = await Promise.all([
+        Bcrypt.getInstance().hashPassword(password),
+        this.repository.checkExistUserByEmail(email),
+      ]);
 
       if (isExistUser) {
         const newUser = await this.repository.createUser({
           email: email,
           password: hashPassword,
         });
+
+        await this.cartRepository.createCart(newUser.id);
+
         const payload: userJwtPayload = {
           id: newUser?.id,
           email: email,
@@ -44,7 +51,7 @@ export default class AuthService {
       throw error;
     }
   }
-  async logout(id: number): Promise<Boolean> {
+  async logout(id: number): Promise<boolean> {
     try {
       const loggedOut = await this.repository.updateUserById(id, {
         setAccessTokenToNull: true,
@@ -82,22 +89,15 @@ export default class AuthService {
         RedisClient.getInstance().get(redisKey),
         Bcrypt.getInstance().hashPassword(newPassword, 10),
       ]);
-      // const savedOtp = await RedisClient.getInstance().get(redisKey);
-      // const hashedPassword = await Bcrypt.getInstance().hashPassword(
-      //   newPassword,
-      //   10
-      // );
+
       if (!savedOtp || savedOtp != otp) {
         throw new Error("Invalid or expired OTP.");
       }
 
       const user = await this.repository.getUserByEmail(email);
-      const updateUserPassword = await this.repository.updateUserById(
-        Number(user?.id),
-        {
-          password: hashedPassword,
-        }
-      );
+      await this.repository.updateUserById(Number(user?.id), {
+        password: hashedPassword,
+      });
       await RedisClient.getInstance().delete(redisKey);
       return true;
     } catch (error) {
@@ -119,7 +119,7 @@ export default class AuthService {
       ).toString();
       const redisKey = `verify:email:${email}`;
       await RedisClient.getInstance().setEx(redisKey, 600, verificationCode);
-      const verificationLink = `http://localhost:3000/api/v1/auth/verify-email?email=${encodeURIComponent(
+      const verificationLink = `http://localhost:${PORT}/api/v1/auth/verify-email?email=${encodeURIComponent(
         email
       )}&code=${verificationCode}`;
       await ResendService.getInstance().sendMail(
@@ -141,12 +141,9 @@ export default class AuthService {
         throw new Error("Invalid or expired verification code.");
       }
       const user = await this.repository.getUserByEmail(email);
-      const updateUserPassword = await this.repository.updateUserById(
-        Number(user?.id),
-        {
-          isEmailVerified: true,
-        }
-      );
+      await this.repository.updateUserById(Number(user?.id), {
+        isEmailVerified: true,
+      });
       await RedisClient.getInstance().delete(redisKey);
       return true;
     } catch (error) {

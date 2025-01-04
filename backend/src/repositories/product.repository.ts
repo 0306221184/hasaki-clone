@@ -1,8 +1,28 @@
 import { Database } from "../lib/database/database";
-import { Product } from "../types/product.type";
 import InsertBuilder from "../helper/builder/sql_builder/insert_builder.helper";
 import SelectBuilder from "../helper/builder/sql_builder/select_builder.helper";
+
 export default class ProductRepository {
+  private getSubImagesProduct = async (productId: number) => {
+    const selectSubImagesProductSql = SelectBuilder.getInstance()
+      .select(["image_url"])
+      .from("product_images")
+      .where(`product_id=${productId}`)
+      .buildSqlServerQuery();
+
+    const subProductImages = await Database.mssql().query(
+      selectSubImagesProductSql
+    );
+    return subProductImages.map((item) => item?.image_url);
+  };
+
+  private parseProductVariants = (product: any) => {
+    return {
+      ...product,
+      variants: JSON.parse(product.variants),
+    };
+  };
+
   public createProduct = async ({
     name,
     description,
@@ -41,6 +61,7 @@ export default class ProductRepository {
         variants,
         tags,
       });
+
       if (productCreated && sub_images_url) {
         const valuesInsert = sub_images_url?.map((url) => {
           return [productCreated?.id, url];
@@ -51,76 +72,76 @@ export default class ProductRepository {
           .column(["product_id", "image_url"])
           .values(valuesInsert)
           .buildSqlServerInsert();
-        const addSubImagesToProduct = await Database.mssql().query(
-          insertToProductSubImagesSql
-        );
-        const selectSubImagesProductSql = SelectBuilder.getInstance()
-          .select(["image_url"])
-          .from("product_images")
-          .where(`product_id=${productCreated?.id}`)
-          .buildSqlServerQuery();
 
-        const subProductImages = await Database.mssql().query(
-          selectSubImagesProductSql
+        await Database.mssql().query(insertToProductSubImagesSql);
+
+        const subImagesProducts = await this.getSubImagesProduct(
+          productCreated.id
         );
-        const result = {
+
+        return {
           ...productCreated,
-          sub_images_products: subProductImages.map((item) => item?.image_url),
+          sub_images_products: subImagesProducts,
         };
-        return result;
       }
       return null;
     } catch (error) {
       throw error;
     }
   };
-  public getOneProduct = async (id?: Number) => {
+
+  public getOneProduct = async (id?: number) => {
     try {
       const product = await Database.mssql().execProc("FindUniqueProduct", {
         id: id,
       });
-      const selectSubImagesProductSql = SelectBuilder.getInstance()
-        .select(["image_url"])
-        .from("product_images")
-        .where(`product_id=${product?.id}`)
-        .buildSqlServerQuery();
 
-      const subProductImages = await Database.mssql().query(
-        selectSubImagesProductSql
-      );
+      const subImagesProducts = await this.getSubImagesProduct(product.id);
+
       return {
-        ...product,
-        variants: JSON.parse(product.variants),
-        sub_images_products: subProductImages.map((item) => item?.image_url),
+        ...this.parseProductVariants(product),
+        sub_images_products: subImagesProducts,
       };
     } catch (error) {
       throw error;
     }
   };
+
   public getManyProducts = async () => {
     try {
       let products = await Database.mssql().execProc("FindManyProducts", {});
 
       if (products && products.length > 0) {
-        products = products.map((product) => {
-          return {
-            ...product,
-            variants: JSON.parse(product.variants),
-          };
-        });
+        products = products.map(this.parseProductVariants);
       }
+
       if (products && !Array.isArray(products)) {
-        return {
-          ...products,
-          variants: JSON.parse(products.variants),
-        };
+        return this.parseProductVariants(products);
       }
+
       return products;
     } catch (error) {
       throw error;
     }
   };
-  public deleteOneProduct = async (id: Number) => {
+
+  public searchProducts = async ({ name, minPrice, maxPrice }) => {
+    try {
+      const searchProducts = await Database.mssql().execProc(
+        "FindManyProducts",
+        {
+          name,
+          min_price: minPrice,
+          max_price: maxPrice,
+        }
+      );
+      return searchProducts;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  public deleteOneProduct = async (id: number) => {
     try {
       const productDeleted = await Database.mssql().execProc("DeleteProduct", {
         product_id: id,
@@ -130,7 +151,7 @@ export default class ProductRepository {
       throw error;
     }
   };
-  //pending
+
   public deleteManyProducts = async () => {
     try {
       const products = await Database.mssql().execProc("FindUniqueProduct");
@@ -139,9 +160,9 @@ export default class ProductRepository {
       throw error;
     }
   };
-  //pending
+
   public updateOneProduct = async (
-    id: Number,
+    id: number,
     {
       name,
       description,
@@ -180,25 +201,20 @@ export default class ProductRepository {
         variants,
         tags,
       });
-      const selectSubImagesProductSql = SelectBuilder.getInstance()
-        .select(["image_url"])
-        .from("product_images")
-        .where(`product_id=${productUpdated?.id}`)
-        .buildSqlServerQuery();
 
-      const subProductImages = await Database.mssql().query(
-        selectSubImagesProductSql
+      const subImagesProducts = await this.getSubImagesProduct(
+        productUpdated.id
       );
+
       return {
-        ...productUpdated,
-        variants: JSON.parse(productUpdated.variants),
-        sub_images_products: subProductImages.map((item) => item?.image_url),
+        ...this.parseProductVariants(productUpdated),
+        sub_images_products: subImagesProducts,
       };
     } catch (error) {
       throw error;
     }
   };
-  //pending
+
   public updateManyProducts = async () => {
     try {
       const products = await Database.mssql().execProc("FindUniqueProduct");
@@ -207,8 +223,8 @@ export default class ProductRepository {
       throw error;
     }
   };
-  //pending
-  public toggleStatusProduct = async (id: Number) => {
+
+  public toggleStatusProduct = async (id: number) => {
     try {
       const product = await Database.mssql().execProc("UpdateProduct", {
         product_id: id,

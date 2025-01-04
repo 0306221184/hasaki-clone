@@ -56,7 +56,10 @@ class _VerificationCodePageState extends State<VerificationCodePage> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Navigator.pushNamed(context, '/reset-password');
+                      Navigator.pushNamed(
+                        context,
+                        '/reset-password',
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(

@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
       // Điều hướng tới trang chủ sau khi đăng nhập thành công
       Navigator.pushNamedAndRemoveUntil(
         context,
-        '/home', // Route tới trang Home
+        '/', // Route tới trang Home
         (Route<dynamic> route) => false, // Loại bỏ tất cả các route trước đó
       );
     } else {
@@ -256,7 +256,10 @@ class _LoginPageState extends State<LoginPage> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/forgotPassword');
+                          Navigator.pushNamed(
+                            context,
+                            '/forgot-password',
+                          );
                         },
                         child: const Text(
                           'Quên mật khẩu?',
@@ -283,7 +286,10 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 20),
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/register');
+                        Navigator.pushNamed(
+                          context,
+                          '/register',
+                        );
                       },
                       child: const Text(
                         'Bạn chưa có tài khoản đăng nhập? Đăng ký',

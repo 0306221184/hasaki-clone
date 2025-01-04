@@ -23,7 +23,7 @@ Whishlist
 
 ---
 
-search product
+search product-
 crud cart
 payment
 cancel order if is pending

@@ -20,15 +20,31 @@ export class Database implements IDatabase {
   }
   execProc(procedureName: string, params: any = {}): Promise<any> {
     if (this.provider instanceof MssqlProvider) {
-      this.provider as IMssql;
       return this.provider.execProc(procedureName, params);
     }
     throw new DatabaseProviderNotSupportedException();
   }
   query(queryString: string, params: any = {}): Promise<any> {
     if (this.provider instanceof MssqlProvider) {
-      this.provider as IMssql;
       return this.provider.query(queryString, params);
+    }
+    throw new DatabaseProviderNotSupportedException();
+  }
+  beginTransaction(): Promise<void> {
+    if (this.provider instanceof MssqlProvider) {
+      return this.provider.beginTransaction();
+    }
+    throw new DatabaseProviderNotSupportedException();
+  }
+  commitTransaction(): Promise<void> {
+    if (this.provider instanceof MssqlProvider) {
+      return this.provider.commitTransaction();
+    }
+    throw new DatabaseProviderNotSupportedException();
+  }
+  rollbackTransaction(): Promise<void> {
+    if (this.provider instanceof MssqlProvider) {
+      return this.provider.rollbackTransaction();
     }
     throw new DatabaseProviderNotSupportedException();
   }
