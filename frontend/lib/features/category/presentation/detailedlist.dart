@@ -3,22 +3,10 @@ import 'package:frontend/features/category/presentation/catalogproducts.dart';
 
 class detailedList extends StatelessWidget {
   final List<Map<String, String>> cards = [
-    {
-      'image': 'https://example.com/image1.jpg',
-      'text': 'Card 1'
-    },
-    {
-      'image': 'https://example.com/image2.jpg',
-      'text': 'Card 2'
-    },
-    {
-      'image': 'https://example.com/image3.jpg',
-      'text': 'Card 3'
-    },
-    {
-      'image': 'https://example.com/image4.jpg',
-      'text': 'Card 4'
-    },
+    {'image': 'https://example.com/image1.jpg', 'text': 'Card 1'},
+    {'image': 'https://example.com/image2.jpg', 'text': 'Card 2'},
+    {'image': 'https://example.com/image3.jpg', 'text': 'Card 3'},
+    {'image': 'https://example.com/image4.jpg', 'text': 'Card 4'},
   ];
 
   @override
@@ -69,12 +57,13 @@ class detailedList extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => catalogproducts(cards[index]['text']!),
+                              builder: (context) =>
+                                  catalogproducts(cards[index]['text']!),
                             ),
                           );
                         },
                         child: Container(
-                          width: 200,
+                          width: 170,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
@@ -89,10 +78,12 @@ class detailedList extends StatelessWidget {
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Center(
-                                        child: Icon(Icons.broken_image, size: 50),
+                                        child:
+                                            Icon(Icons.broken_image, size: 50),
                                       );
                                     },
-                                    loadingBuilder: (context, child, loadingProgress) {
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
                                       if (loadingProgress == null) return child;
                                       return Center(
                                         child: CircularProgressIndicator(),
@@ -166,10 +157,11 @@ class detailedList extends StatelessWidget {
     );
   }
 
-  Widget _buildProductCard(String title, String description, String price, double rating, int reviewCount) {
+  Widget _buildProductCard(String title, String description, String price,
+      double rating, int reviewCount) {
     return Container(
-      width: 220, // Đặt chiều rộng của mỗi thẻ
-      height: 300,
+      width: 170, // Đặt chiều rộng của mỗi thẻ
+      height: 280,
       child: Card(
         elevation: 10,
         shadowColor: Colors.grey.withOpacity(1), // Màu của viền mờ
