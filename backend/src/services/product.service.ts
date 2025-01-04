@@ -57,7 +57,7 @@ export default class ProductService {
       throw error;
     }
   };
-  public getOneProduct = async (id?: Number) => {
+  public getOneProduct = async (id?: number) => {
     try {
       const product = await this.repository.getOneProduct(id);
       return product;
@@ -65,7 +65,19 @@ export default class ProductService {
       throw error;
     }
   };
-  public deleteOneProduct = async (id: Number) => {
+  public searchProducts = async ({ name, minPrice, maxPrice }) => {
+    try {
+      const searchProducts = await this.repository.searchProducts({
+        name,
+        minPrice,
+        maxPrice,
+      });
+      return searchProducts;
+    } catch (error) {
+      throw error;
+    }
+  };
+  public deleteOneProduct = async (id: number) => {
     try {
       const product = await this.repository.deleteOneProduct(id);
       return product;
@@ -82,7 +94,7 @@ export default class ProductService {
     }
   };
   public updateOneProduct = async (
-    id: Number,
+    id: number,
     {
       name,
       description,
@@ -133,7 +145,7 @@ export default class ProductService {
       throw error;
     }
   };
-  public toggleStatusProduct = async (id: Number) => {
+  public toggleStatusProduct = async (id: number) => {
     try {
       const product = await this.repository.toggleStatusProduct(id);
       return product;

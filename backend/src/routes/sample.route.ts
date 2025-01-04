@@ -3,9 +3,6 @@ import SampleController from "../controllers/sample.controller";
 import { IRoute } from "../interfaces/route.interface";
 import StripeService from "../lib/stripe";
 import { FRONTEND_URL } from "../config/env.config";
-import RabbitMQClient from "../lib/rabbitMq_client";
-import { RB_TEST_QUEUE } from "../config/rabbitMQ.config";
-
 class SampleRoute implements IRoute {
   public router: Router = Router();
   public controller: SampleController = new SampleController();

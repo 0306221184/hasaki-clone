@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'register_screen.dart';
-import 'forgot_password_screen.dart';
+import 'package:frontend/features/authentication/presentation/register_screen.dart';
+import 'package:frontend/features/authentication/presentation/forgot_password_screen.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -21,13 +21,22 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  String? _validateUsername(String? value) {
+  // Validate email
+  String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Tên đăng nhập không được để trống';
+      return 'Vui lòng nhập email';
     }
-    if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value)) {
-      return 'Tên đăng nhập không hợp lệ (không chứa ký tự đặc biệt)';
+
+    final RegExp emailRegex =
+        RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+    if (!emailRegex.hasMatch(value)) {
+      return 'Vui lòng nhập email hợp lệ';
     }
+
+    if (value.length < 5) {
+      return 'Email phải có ít nhất 5 ký tự';
+    }
+
     return null;
   }
 
@@ -43,7 +52,18 @@ class _LoginPageState extends State<LoginPage> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
+      // Xóa dữ liệu sau khi đăng nhập thành công
+      _usernameController.clear();
+      _passwordController.clear();
+
       _showDialog('Đăng nhập thành công', Colors.white);
+
+      // Điều hướng tới trang chủ sau khi đăng nhập thành công
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/', // Route tới trang Home
+        (Route<dynamic> route) => false, // Loại bỏ tất cả các route trước đó
+      );
     } else {
       _showDialog(
           'Vui lòng điền đầy đủ thông tin và kiểm tra lại', Colors.white);
@@ -174,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                child: Image.asset('assets/Logo_doria.jpg', fit: BoxFit.cover),
+                child: Image.asset('assets/Logo_doria.png', fit: BoxFit.cover),
               ),
               const SizedBox(height: 15),
               ElevatedButton.icon(
@@ -205,9 +225,9 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     TextFormField(
                       controller: _usernameController,
-                      validator: _validateUsername,
+                      validator: _validateEmail,
                       decoration: InputDecoration(
-                        hintText: 'Tên đăng nhập',
+                        hintText: 'Email',
                         filled: true,
                         fillColor: Colors.grey[200],
                         border: OutlineInputBorder(
@@ -236,8 +256,10 @@ class _LoginPageState extends State<LoginPage> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushNamedAndRemoveUntil(context,
-                              '/auth/forgot-password', (route) => true);
+                          Navigator.pushNamed(
+                            context,
+                            '/forgot-password',
+                          );
                         },
                         child: const Text(
                           'Quên mật khẩu?',
@@ -264,11 +286,9 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 20),
                     TextButton(
                       onPressed: () {
-                        // Điều hướng sang trang đăng ký
-                        Navigator.pushNamedAndRemoveUntil(
+                        Navigator.pushNamed(
                           context,
-                          "/auth/register",
-                          (route) => true,
+                          '/register',
                         );
                       },
                       child: const Text(
