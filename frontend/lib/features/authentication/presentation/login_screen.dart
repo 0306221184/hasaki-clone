@@ -174,12 +174,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       backgroundColor: Colors.white,
       body: Center(

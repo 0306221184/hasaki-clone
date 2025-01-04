@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false, // Ẩn thanh debug banner
       routes: {
         '/': (context) => LoginPage(),
+        '/login': (context) => LoginPage(),
         '/register': (context) => RegisterPage(),
         '/forgot-password': (context) => ForgotPasswordPage(),
         '/verification-code': (context) => VerificationCodePage(),

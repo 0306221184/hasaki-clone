@@ -498,8 +498,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     // Navigator.pushReplacementNamed(context, '/');
                     Navigator.pushNamedAndRemoveUntil(
                       context,
-                      "/",
-                      (route) => true,
+                      "/login",
+                      (route) => false,
                     );
                   },
                   child: const Text(
