@@ -5,6 +5,9 @@ import 'package:frontend/features/authentication/presentation/forget_pasword_scr
 =======
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
+<<<<<<< HEAD
+>>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
+=======
 >>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
 
 class LoginPage extends StatefulWidget {
@@ -196,7 +199,12 @@ class _LoginPageState extends State<LoginPage> {
                       child: TextButton(
                         onPressed: () {
 <<<<<<< HEAD
+<<<<<<< HEAD
                           Navigator.pushNamed(context, '/forgotPassword');
+=======
+                          Navigator.pushNamedAndRemoveUntil(context,
+                              '/auth/forgot-password', (route) => true);
+>>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
 =======
                           Navigator.pushNamedAndRemoveUntil(context,
                               '/auth/forgot-password', (route) => true);
