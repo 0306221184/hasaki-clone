@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:frontend/features/authentication/presentation/verification_code_page.dart';
-
-class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
-=======
 import 'login_screen.dart'; // Đảm bảo login_screen.dart có trang đăng ký của bạn
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({Key? key}) : super(key: key);
->>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
 
   @override
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
@@ -20,20 +13,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
-<<<<<<< HEAD
-=======
   // Giả lập việc gửi mã xác nhận qua email
->>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
   Future<void> _sendVerificationCode(String email) async {
     setState(() {
       _isLoading = true;
     });
-<<<<<<< HEAD
-    await Future.delayed(const Duration(seconds: 2));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Mã xác nhận đã được gửi qua email')),
-    );
-=======
 
     // Giả lập gửi mã xác nhận thành công
     await Future.delayed(const Duration(seconds: 2)); // Giả lập trễ
@@ -41,7 +25,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       const SnackBar(content: Text('Mã xác nhận đã được gửi qua email')),
     );
 
->>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
     setState(() {
       _isLoading = false;
     });
@@ -56,14 +39,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             child: Text(
           'Quên Mật Khẩu',
           style: TextStyle(
-<<<<<<< HEAD
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-=======
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
->>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
         )),
       ),
       body: Padding(
@@ -104,11 +83,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           final email = _emailController.text;
                           if (_formKey.currentState!.validate()) {
                             _sendVerificationCode(email);
-<<<<<<< HEAD
-                            Navigator.pushNamed(context, '/verification-code');
-                          }
-                        },
-=======
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -120,23 +94,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   child: _isLoading
                       ? CircularProgressIndicator(color: Colors.white)
                       : const Text('Gửi mã xác nhận'),
->>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(
                         vertical: 12, horizontal: 20),
                     shape: RoundedRectangleBorder(
-<<<<<<< HEAD
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: _isLoading
-                      ? CircularProgressIndicator(color: Colors.white)
-                      : const Text('Gửi mã xác nhận'),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                    'Vui lòng cung cấp địa chỉ email để lấy lại mật khẩu'),
-=======
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
@@ -356,7 +318,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     ),
                   ),
                 ),
->>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
               ],
             ),
           ),

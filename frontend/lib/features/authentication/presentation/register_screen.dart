@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'login_screen.dart'; // Make sure to check the path of LoginPage
+import 'package:frontend/features/authentication/presentation/login_screen.dart';
 import 'dart:async';
 
 class RegisterPage extends StatefulWidget {
@@ -495,19 +495,12 @@ class _RegisterPageState extends State<RegisterPage> {
               Center(
                 child: TextButton(
                   onPressed: () {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    Navigator.pushReplacementNamed(
-                        context, '/'); // Điều hướng đúng về trang đăng nhập
-=======
-=======
->>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
+                    Navigator.pushReplacementNamed(context, '/');
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       "/",
                       (route) => true,
                     );
->>>>>>> 9d667fef94d2a779ea928ab779f8f13ce865d856
                   },
                   child: const Text(
                     'Đã có tài khoản? Đăng nhập.',
