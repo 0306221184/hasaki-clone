@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_email_sender: ^5.0.2
+  carousel_slider: ^5.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -96,3 +97,11 @@ flutter:
   # see https://flutter.dev/to/font-from-package
   assets:
     - assets/Logo_doria.jpg
+    - assets/logo_den.jpg
+    - assets/banner1.jpg
+    - assets/banner2.jpg
+    - assets/banner3.jpg
+    - assets/banner4.jpg
+    - assets/3ce.jpg
+    - assets/cocon.jpg
+    - assets/logo-cocoon.jpg
