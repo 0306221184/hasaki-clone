@@ -22,11 +22,12 @@ export default class CartController {
         quantity,
         price,
       });
-      res.status(StatusCodes.CREATED).json({
-        status: "OK",
-        message: "Cart item created successfully!",
-        data: cartItem,
-      });
+      if (cartItem) {
+        res.status(StatusCodes.CREATED).json({
+          status: "OK",
+          message: "Cart item created successfully!",
+        });
+      }
     } catch (error) {
       next(error);
     }

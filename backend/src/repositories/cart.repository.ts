@@ -29,6 +29,7 @@ export default class CartRepository {
       await Database.mssql().beginTransaction();
 
       // Sử dụng MERGE để thực hiện cả INSERT và UPDATE trong một câu lệnh
+
       const result = await Database.mssql().query(
         `
             MERGE INTO cart_items AS target
@@ -46,7 +47,7 @@ export default class CartRepository {
       // Commit transaction
       await Database.mssql().commitTransaction();
 
-      return result;
+      return true;
     } catch (error) {
       // Rollback transaction nếu có lỗi
       await Database.mssql().rollbackTransaction();
