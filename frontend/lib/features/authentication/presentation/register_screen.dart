@@ -16,8 +16,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailPhoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
-  final TextEditingController _verificationCodeController =
-      TextEditingController();
+  final TextEditingController _verificationCodeController = TextEditingController();
 
   bool _obscurePassword = true; // Trạng thái ẩn/hiện mật khẩu
   String? _gender; // Giới tính

@@ -41,6 +41,7 @@ dependencies:
   flutter_stripe: ^11.3.0
   dart_jsonwebtoken: ^2.14.2
   socket_io_client: ^3.0.2
+  shared_preferences: ^2.3.5
 
 dev_dependencies:
   flutter_test:
