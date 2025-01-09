@@ -201,7 +201,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               IconButton(
                                 icon: const Icon(Icons.favorite),
                                 onPressed: () {
-                                  // Hành động khi nhấn nút
+                                  Navigator.pushNamed(context, '/favorite');
                                 },
                               ),
                               const Text('Yêu thích'),
@@ -212,7 +212,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               IconButton(
                                 icon: const Icon(Icons.star),
                                 onPressed: () {
-                                  // Hành động khi nhấn nút
+                                  Navigator.pushNamed(context, '/review');
                                 },
                               ),
                               const Text('Đánh giá'),
@@ -240,7 +240,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               IconButton(
                                 icon: const Icon(Icons.card_giftcard),
                                 onPressed: () {
-                                  // Hành động khi nhấn nút
+                                  Navigator.pushNamed(context, '/voucher');
                                 },
                               ),
                               const Text('Voucher'),
@@ -251,7 +251,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               IconButton(
                                 icon: const Icon(Icons.new_releases),
                                 onPressed: () {
-                                  // Hành động khi nhấn nút
+                                  Navigator.pushNamed(context, '/newproduct');
                                 },
                               ),
                               const Text('Sản phẩm mới'),

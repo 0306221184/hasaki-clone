@@ -22,60 +22,60 @@ class _DonHangScreenState extends State<OrderScreen> with SingleTickerProviderSt
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: Column(
-        children: [
-          _buildTabBar(),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildEmptyCart(),
-                _justordered(),
-                _orderprocessing(),
-                _success(),
-                _buildCancelledOrders(), // New widget for cancelled orders
-              ],
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: _buildAppBar(),
+        body: Column(
+          children: [
+            _buildTabBar(),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildEmptyCart(),
+                  _justordered(),
+                  _orderprocessing(),
+                  _success(),
+                  _buildCancelledOrders(), // New widget for cancelled orders
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
+    }
 
-  /// AppBar phần trên cùng
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: Text('Đơn hàng'),
-      backgroundColor: Colors.blue,
-      foregroundColor: Colors.white,
-      centerTitle: true,
-    );
-  }
+    /// AppBar phần trên cùng
+    AppBar _buildAppBar() {
+      return AppBar(
+        title: Text('Đơn hàng'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+      );
+    }
 
-  /// TabBar riêng bên dưới AppBar
-  Widget _buildTabBar() {
-    return Material(
-      color: Colors.white,
-      child: TabBar(
-        controller: _tabController,
-        isScrollable: true, // Cho phép cuộn
-        indicatorColor: Colors.red, // Màu gạch chân
-        labelColor: Colors.red, // Màu chữ khi được chọn
-        unselectedLabelColor: Colors.black, // Màu chữ khi không được chọn
-        tabs: [
-          Tab(text: 'Tất cả'),
-          Tab(text: 'Mới đặt'),
-          Tab(text: 'Đang xử lý'),
-          Tab(text: 'Đang vận chuyển'),
-          Tab(text: 'Đã hủy'), // Added the new 'Cancelled' tab
-        ],
-      ),
-    );
-  }
+    /// TabBar riêng bên dưới AppBar
+    Widget _buildTabBar() {
+      return Material(
+        color: Colors.white,
+        child: TabBar(
+          controller: _tabController,
+          isScrollable: true, // Cho phép cuộn
+          indicatorColor: Colors.red, // Màu gạch chân
+          labelColor: Colors.red, // Màu chữ khi được chọn
+          unselectedLabelColor: Colors.black, // Màu chữ khi không được chọn
+          tabs: [
+            Tab(text: 'Tất cả'),
+            Tab(text: 'Mới đặt'),
+            Tab(text: 'Đang xử lý'),
+            Tab(text: 'Đang vận chuyển'),
+            Tab(text: 'Đã hủy'), // Added the new 'Cancelled' tab
+          ],
+        ),
+      );
+    }
 
   Widget _buildEmptyCart() {
     return SingleChildScrollView(
