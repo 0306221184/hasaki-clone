@@ -25,6 +25,7 @@ class PaymentRoute implements IRoute {
     // Hủy đơn hàng
     this.router.post("/cancel-order/:order_id", this.controller.cancelOrder);
   }
+  
 }
 
 export default new PaymentRoute();
