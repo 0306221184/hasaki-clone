@@ -77,42 +77,60 @@ class DetailScreen extends StatelessWidget {
 
   Widget _buildProductCard(String title, String description, String price, double rating, int reviewCount) {
     return Container(
-      width: 220, // Đặt chiều rộng của mỗi thẻ
-      height: 300,
+      width: 200, // Adjusted card width
       child: Card(
         elevation: 10,
-        shadowColor: Colors.grey.withOpacity(1), // Màu của viền mờ
+        shadowColor: Colors.grey.withOpacity(0.5),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15), // Bo tròn góc của thẻ
+          borderRadius: BorderRadius.circular(12), // Rounded corners
         ),
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image.network(
-              // image, width: 160,
-              // // Đặt chiều rộng của ảnh cho phù hợp với thẻ
-              // height: 100, // Đặt chiều cao của ảnh
-              // fit: BoxFit.cover, // Đảm bảo ảnh vừa khung và cắt nếu cần
-              // ),
-              // SizedBox(height: 8.0),
+              Container(
+                height: 120, // Fixed image height
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    'assets/Skinqua.png', // Replace with actual image path
+                    fit: BoxFit.cover, // Scale image to cover the entire area
+                  ),
+                ),
+              ),
+              SizedBox(height: 8.0),
               Text(
                 title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 4.0),
+              Text(
+                description,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 14),
               ),
               SizedBox(height: 8.0),
               Text(
-                description,
-                softWrap: true, // Tự động xuống hàng khi văn bản quá dài
+                price,
+                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8.0),
-              Text(price, style: TextStyle(color: Colors.red)),
-              SizedBox(height: 8.0),
+              SizedBox(height: 4.0),
               Row(
                 children: [
-                  Icon(Icons.star, color: Colors.yellow),
-                  Text('$rating ($reviewCount)'),
+                  Icon(Icons.star, color: Colors.orange, size: 16),
+                  SizedBox(width: 4),
+                  Text(
+                    '$rating ($reviewCount)',
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ],
               ),
             ],
@@ -121,4 +139,6 @@ class DetailScreen extends StatelessWidget {
       ),
     );
   }
+
+
 }

@@ -97,4 +97,6 @@ flutter:
   # see https://flutter.dev/to/font-from-package
   assets:
     - assets/Logo_doria.jpg
-    - assets/skinqua.png
+    - assets/Skinqua.png
+    - assets/skin.png
+    - assets/SkinUV.png

@@ -26,7 +26,7 @@ class FavoriteProductScreen extends StatelessWidget {
           centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -34,7 +34,7 @@ class FavoriteProductScreen extends StatelessWidget {
               children: [
                 // Product image with smaller size
                 Image.asset(
-                  'assets/skinqua.png', // Replace with your image asset
+                  'assets/Skinqua.png', // Replace with your image asset
                   width: 50, // Adjusted width
                   height: 50, // Adjusted height
                 ),

@@ -81,7 +81,7 @@ class Product {
 
 final List<Product> products = [
   Product(
-    imageUrl: "https://via.placeholder.com/100",
+    imageUrl: "assets/Skinqua.png",
     name: "Obagi",
     price: "1.480.000đ",
     description: "Kem Dưỡng Obagi Retinal 1.0% Trẻ Hóa Da, Ngừa Mụn",
@@ -89,12 +89,12 @@ final List<Product> products = [
     reviews: 12,
   ),
   Product(
-    imageUrl: "https://via.placeholder.com/100",
+    imageUrl: "assets/Skinqua.png",
     name: "Skin Aqua UV Body",
     price: "120.000đ",
     description: "Sữa Chống Nắng Sunday Skin Aqua UV Body PA+++",
     rating: 4.7,
-    reviews: 115,
+    reviews: 12,
   ),
   // Thêm các sản phẩm khác nếu cần
 ];
@@ -114,9 +114,9 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
+            Image.asset(
               product.imageUrl,
-              height: 80,
+              height: 50,
               width: double.infinity,
               fit: BoxFit.cover,
             ),
