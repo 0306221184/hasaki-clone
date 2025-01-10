@@ -13,36 +13,36 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   final List<List<Widget>> categoryItems = [
     [
-      CategoryItem(imageUrl: 'path/to/image1.jpg', label: 'Mỹ phẩm High-End'),
-      CategoryItem(imageUrl: 'path/to/image2.jpg', label: 'Chăm sóc da mặt'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Mỹ phẩm High-End'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Chăm sóc da mặt'),
     ],
     [
-      CategoryItem(imageUrl: 'path/to/image3.jpg', label: 'Trang điểm'),
-      CategoryItem(imageUrl: 'path/to/image4.jpg', label: 'Trang điểm cao cấp'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Trang điểm'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Trang điểm cao cấp'),
     ],
     [
-      CategoryItem(imageUrl: 'path/to/image5.jpg', label: 'Chăm sóc Tóc'),
-      CategoryItem(imageUrl: 'path/to/image6.jpg', label: 'Chăm sóc Da đầu'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Chăm sóc Tóc'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Chăm sóc Da đầu'),
     ],
     [
-      CategoryItem(imageUrl: 'path/to/image7.jpg', label: 'Chăm sóc cơ thể'),
-      CategoryItem(imageUrl: 'path/to/image8.jpg', label: 'Sản phẩm cơ thể'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Chăm sóc cơ thể'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Sản phẩm cơ thể'),
     ],
     [
-      CategoryItem(imageUrl: 'path/to/image9.jpg', label: 'Chăm sóc cá nhân'),
-      CategoryItem(imageUrl: 'path/to/image10.jpg', label: 'Vệ sinh cá nhân'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Chăm sóc cá nhân'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Vệ sinh cá nhân'),
     ],
     [
-      CategoryItem(imageUrl: 'path/to/image11.jpg', label: 'Nước hoa A'),
-      CategoryItem(imageUrl: 'path/to/image12.jpg', label: 'Nước hoa B'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Nước hoa A'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Nước hoa B'),
     ],
     [
-      CategoryItem(imageUrl: 'path/to/image13.jpg', label: 'Thực phẩm chức năng A'),
-      CategoryItem(imageUrl: 'path/to/image14.jpg', label: 'Thực phẩm chức năng B'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Thực phẩm chức năng A'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Thực phẩm chức năng B'),
     ],
     [
-      CategoryItem(imageUrl: 'path/to/image15.jpg', label: 'Phiếu mua hàng A'),
-      CategoryItem(imageUrl: 'path/to/image16.jpg', label: 'Phiếu mua hàng B'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Phiếu mua hàng A'),
+      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Phiếu mua hàng B'),
     ],
   ];
 
@@ -237,19 +237,43 @@ class CategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {
-          Navigator.push( 
-            context, MaterialPageRoute( 
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
             builder: (context) => detailedList(),
+          ),
+        );
+      },
+      child: Card(
+        margin: EdgeInsets.all(8.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    imageUrl,
+                    fit: BoxFit.cover, // Đảm bảo hình ảnh vừa khung hình
+                    width: double.infinity,
+                  ),
+                ),
               ),
-            );
-          },
-    child: Column(
-      children: [
-        Image.network(imageUrl),
-        Text(label),
-      ],
-    )
+              SizedBox(height: 8),
+              Text(
+                label,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
