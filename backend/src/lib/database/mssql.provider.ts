@@ -6,6 +6,7 @@ export class MssqlProvider implements IMssql {
   private static instance: MssqlProvider | null = null;
   private config: sql.config;
   private pool: sql.ConnectionPool | null = null;
+  private transaction: sql.Transaction | null = null;
 
   private constructor(config: sql.config) {
     this.config = config;
@@ -106,6 +107,35 @@ export class MssqlProvider implements IMssql {
       }
     } catch (err) {
       console.error("Error closing MSSQL connection pool:", err);
+    }
+  }
+
+  // Begin a transaction
+  public async beginTransaction(): Promise<void> {
+    try {
+      const pool = await this.connect();
+      this.transaction = new sql.Transaction(pool);
+      await this.transaction.begin();
+    } catch (err) {
+      throw new Error("Failed to begin transaction: " + err);
+    }
+  }
+
+  // Commit the current transaction
+  public async commitTransaction(): Promise<void> {
+    try {
+      await this.transaction?.commit();
+    } catch (err) {
+      throw new Error("Failed to commit transaction: " + err);
+    }
+  }
+
+  // Rollback the current transaction
+  public async rollbackTransaction(): Promise<void> {
+    try {
+      await this.transaction?.rollback();
+    } catch (err) {
+      throw new Error("Failed to rollback transaction: " + err);
     }
   }
 }
