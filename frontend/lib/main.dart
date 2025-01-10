@@ -6,7 +6,7 @@ import 'package:frontend/features/account/review/reviewscreen.dart';
 import 'package:frontend/features/account/trademark/productTrademark.dart';
 import 'package:frontend/features/account/voucher/voucherScreen.dart';
 import 'package:frontend/features/authentication/presentation/login_screen.dart';
-
+import 'package:frontend/features/category/presentation/category_screen.dart';
 import 'package:frontend/features/notification/presentation/notification_screen.dart';
 import 'features/account/changepassword/changePasswordScreen.dart';
 import 'features/account/location/locationScreen.dart';
