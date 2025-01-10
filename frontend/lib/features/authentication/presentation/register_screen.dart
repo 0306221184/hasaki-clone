@@ -16,8 +16,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailPhoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
-  final TextEditingController _verificationCodeController =
-      TextEditingController();
+  final TextEditingController _verificationCodeController = TextEditingController();
 
   bool _obscurePassword = true; // Toggle password visibility
   String? _gender; // Gender

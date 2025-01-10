@@ -42,6 +42,7 @@ dependencies:
   flutter_stripe: ^11.3.0
   dart_jsonwebtoken: ^2.14.2
   socket_io_client: ^3.0.2
+  shared_preferences: ^2.3.5
 
 dev_dependencies:
   flutter_test:
@@ -97,6 +98,9 @@ flutter:
   # see https://flutter.dev/to/font-from-package
   assets:
     - assets/Logo_doria.jpg
+    - assets/Skinqua.png
+    - assets/skin.png
+    - assets/SkinUV.png
     - assets/logo_den.jpg
     - assets/banner1.jpg
     - assets/banner2.jpg
