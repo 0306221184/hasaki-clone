@@ -33,7 +33,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.popUntil(context, ModalRoute.withName('/login'));
               },
               child: const Text('OK'),
             ),

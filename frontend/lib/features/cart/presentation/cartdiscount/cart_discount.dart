@@ -31,7 +31,10 @@ class DiscountCodeScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => OrderConfirmationScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => OrderConfirmationScreen()));
           },
         ),
       ),
@@ -48,7 +51,8 @@ class DiscountCodeScreen extends StatelessWidget {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16.0),
                     ),
                   ),
                 ),
@@ -74,9 +78,7 @@ class DiscountCodeScreen extends StatelessWidget {
             ),
             const Spacer(),
             ElevatedButton(
-              onPressed: () {
-                // Chức năng khi nhấn nút "Tiếp tục"
-              },
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.lightBlue,
                 minimumSize: const Size(double.infinity, 50),

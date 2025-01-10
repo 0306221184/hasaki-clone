@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/features/cart/data/models/cart_model.dart';
 import 'package:frontend/features/cart/presentation/cartaddress/cart_address.dart'; // Ensure AddressScreen is correctly implemented
 import 'package:frontend/features/cart/presentation/cart/cart_item.dart'; // Ensure CartItem is properly implemented
 
@@ -50,6 +51,7 @@ class _CartScreenState extends State<CartScreen> {
       pricePerItem.removeAt(index); // Remove the price at the specified index
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,26 +66,27 @@ class _CartScreenState extends State<CartScreen> {
           Expanded(
             child: quantities.isEmpty
                 ? Center(
-              child: Text(
-                'Giỏ hàng không có sản phẩm',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-            )
+                    child: Text(
+                      'Giỏ hàng không có sản phẩm',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  )
                 : ListView.builder(
-              padding: EdgeInsets.all(16.0),
-              itemCount: quantities.length,
-              itemBuilder: (context, index) {
-                return CartItem(
-                  quantity: quantities[index],
-                  onQuantityChanged: (newQuantity) {
-                    updateQuantity(index, newQuantity);
-                  },
-                  onDelete: () {
-                    _showDeleteDialog(index); // Show confirmation dialog before deletion
-                  },
-                );
-              },
-            ),
+                    padding: EdgeInsets.all(16.0),
+                    itemCount: quantities.length,
+                    itemBuilder: (context, index) {
+                      return CartItem(
+                        quantity: quantities[index],
+                        onQuantityChanged: (newQuantity) {
+                          updateQuantity(index, newQuantity);
+                        },
+                        onDelete: () {
+                          _showDeleteDialog(
+                              index); // Show confirmation dialog before deletion
+                        },
+                      );
+                    },
+                  ),
           ),
           Divider(height: 1, color: Colors.grey),
           Padding(
@@ -97,7 +100,8 @@ class _CartScreenState extends State<CartScreen> {
                     children: [
                       Text(
                         'Tổng thanh toán',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -123,11 +127,17 @@ class _CartScreenState extends State<CartScreen> {
                   onPressed: quantities.isEmpty
                       ? null // Disable button when cart is empty
                       : () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddressScreen()),
-                    );
-                  },
+                          CartModel.getInstance().addProduct(Product(
+                            name: "Skin aqua clear white",
+                            quantity: this.quantities[0],
+                            pricePerItem: this.pricePerItem[0],
+                          ));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddressScreen()),
+                          );
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: quantities.isEmpty
                         ? Colors.grey // Set a disabled color for the button
@@ -135,7 +145,9 @@ class _CartScreenState extends State<CartScreen> {
                     padding: EdgeInsets.symmetric(vertical: 16.0),
                   ),
                   child: Text(
-                    quantities.isEmpty ? 'Giỏ hàng trống' : 'TIẾN HÀNH ĐẶT HÀNG',
+                    quantities.isEmpty
+                        ? 'Giỏ hàng trống'
+                        : 'TIẾN HÀNH ĐẶT HÀNG',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -157,11 +169,13 @@ class _CartScreenState extends State<CartScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Xóa sản phẩm'),
-          content: Text('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?'),
+          content:
+              Text('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Đóng hộp thoại mà không xóa sản phẩm
+                Navigator.of(context)
+                    .pop(); // Đóng hộp thoại mà không xóa sản phẩm
               },
               child: Text('Hủy'),
             ),
@@ -188,6 +202,4 @@ class _CartScreenState extends State<CartScreen> {
       },
     );
   }
-
 }
-

@@ -82,7 +82,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       : () {
                           final email = _emailController.text;
                           if (_formKey.currentState!.validate()) {
-                            _sendVerificationCode(email);
+                            // _sendVerificationCode(email);
                             Navigator.pushNamed(
                               context,
                               '/verification-code',
