@@ -85,6 +85,23 @@ export default class ProductController {
       next(error);
     }
   };
+  public searchProducts = async (req, res, next) => {
+    try {
+      const { name, minPrice, maxPrice } = req?.query;
+      const searchProducts = await this.productService.searchProducts({
+        name,
+        minPrice,
+        maxPrice,
+      });
+      res.status(StatusCodes.OK).json({
+        status: "OK",
+        message: "Search products successfully!!",
+        data: searchProducts,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
   //DELETE
   public deleteOneProduct = async (
     req: Request,

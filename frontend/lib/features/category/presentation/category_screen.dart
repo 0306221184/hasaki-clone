@@ -37,8 +37,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
       CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Nước hoa B'),
     ],
     [
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Thực phẩm chức năng A'),
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Thực phẩm chức năng B'),
+      CategoryItem(
+          imageUrl: 'assets/skinqua.png', label: 'Thực phẩm chức năng A'),
+      CategoryItem(
+          imageUrl: 'assets/skinqua.png', label: 'Thực phẩm chức năng B'),
     ],
     [
       CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Phiếu mua hàng A'),
@@ -86,11 +88,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     'Chăm sóc da mặt',
                     style: TextStyle(
                       fontSize: selectedIndex == 0 ? 18 : 14,
-                      color: selectedIndex == 0 ? Colors.blue : Colors.black, // Chữ màu xanh khi được chọn
+                      color: selectedIndex == 0
+                          ? Colors.blue
+                          : Colors.black, // Chữ màu xanh khi được chọn
                     ),
                   ),
                   selected: selectedIndex == 0,
-                  selectedTileColor: Colors.blue.shade100, // Màu nền xanh dương khi được chọn
+                  selectedTileColor:
+                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
                   onTap: () {
                     setState(() {
                       selectedIndex = 0;
@@ -102,11 +107,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     'Trang điểm',
                     style: TextStyle(
                       fontSize: selectedIndex == 1 ? 18 : 14,
-                      color: selectedIndex == 1 ? Colors.blue : Colors.black, // Chữ màu xanh khi được chọn
+                      color: selectedIndex == 1
+                          ? Colors.blue
+                          : Colors.black, // Chữ màu xanh khi được chọn
                     ),
                   ),
                   selected: selectedIndex == 1,
-                  selectedTileColor: Colors.blue.shade100, // Màu nền xanh dương khi được chọn
+                  selectedTileColor:
+                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
                   onTap: () {
                     setState(() {
                       selectedIndex = 1;
@@ -118,11 +126,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     'Chăm sóc Tóc và Da đầu',
                     style: TextStyle(
                       fontSize: selectedIndex == 2 ? 18 : 14,
-                      color: selectedIndex == 2 ? Colors.blue : Colors.black, // Chữ màu xanh khi được chọn
+                      color: selectedIndex == 2
+                          ? Colors.blue
+                          : Colors.black, // Chữ màu xanh khi được chọn
                     ),
                   ),
                   selected: selectedIndex == 2,
-                  selectedTileColor: Colors.blue.shade100, // Màu nền xanh dương khi được chọn
+                  selectedTileColor:
+                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
                   onTap: () {
                     setState(() {
                       selectedIndex = 2;
@@ -134,11 +145,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     'Chăm sóc cơ thể',
                     style: TextStyle(
                       fontSize: selectedIndex == 3 ? 18 : 14,
-                      color: selectedIndex == 3 ? Colors.blue : Colors.black, // Chữ màu xanh khi được chọn
+                      color: selectedIndex == 3
+                          ? Colors.blue
+                          : Colors.black, // Chữ màu xanh khi được chọn
                     ),
                   ),
                   selected: selectedIndex == 3,
-                  selectedTileColor: Colors.blue.shade100, // Màu nền xanh dương khi được chọn
+                  selectedTileColor:
+                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
                   onTap: () {
                     setState(() {
                       selectedIndex = 3;
@@ -150,11 +164,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     'Chăm sóc cá nhân',
                     style: TextStyle(
                       fontSize: selectedIndex == 4 ? 18 : 14,
-                      color: selectedIndex == 4 ? Colors.blue : Colors.black, // Chữ màu xanh khi được chọn
+                      color: selectedIndex == 4
+                          ? Colors.blue
+                          : Colors.black, // Chữ màu xanh khi được chọn
                     ),
                   ),
                   selected: selectedIndex == 4,
-                  selectedTileColor: Colors.blue.shade100, // Màu nền xanh dương khi được chọn
+                  selectedTileColor:
+                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
                   onTap: () {
                     setState(() {
                       selectedIndex = 4;
@@ -166,11 +183,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     'Nước hoa',
                     style: TextStyle(
                       fontSize: selectedIndex == 5 ? 18 : 14,
-                      color: selectedIndex == 5 ? Colors.blue : Colors.black, // Chữ màu xanh khi được chọn
+                      color: selectedIndex == 5
+                          ? Colors.blue
+                          : Colors.black, // Chữ màu xanh khi được chọn
                     ),
                   ),
                   selected: selectedIndex == 5,
-                  selectedTileColor: Colors.blue.shade100, // Màu nền xanh dương khi được chọn
+                  selectedTileColor:
+                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
                   onTap: () {
                     setState(() {
                       selectedIndex = 5;
@@ -182,11 +202,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     'Thực phẩm chức năng',
                     style: TextStyle(
                       fontSize: selectedIndex == 6 ? 18 : 14,
-                      color: selectedIndex == 6 ? Colors.blue : Colors.black, // Chữ màu xanh khi được chọn
+                      color: selectedIndex == 6
+                          ? Colors.blue
+                          : Colors.black, // Chữ màu xanh khi được chọn
                     ),
                   ),
                   selected: selectedIndex == 6,
-                  selectedTileColor: Colors.blue.shade100, // Màu nền xanh dương khi được chọn
+                  selectedTileColor:
+                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
                   onTap: () {
                     setState(() {
                       selectedIndex = 6;
@@ -198,11 +221,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     'Phiếu mua hàng',
                     style: TextStyle(
                       fontSize: selectedIndex == 7 ? 18 : 14,
-                      color: selectedIndex == 7 ? Colors.blue : Colors.black, // Chữ màu xanh khi được chọn
+                      color: selectedIndex == 7
+                          ? Colors.blue
+                          : Colors.black, // Chữ màu xanh khi được chọn
                     ),
                   ),
                   selected: selectedIndex == 7,
-                  selectedTileColor: Colors.blue.shade100, // Màu nền xanh dương khi được chọn
+                  selectedTileColor:
+                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
                   onTap: () {
                     setState(() {
                       selectedIndex = 7;
