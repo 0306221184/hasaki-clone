@@ -326,6 +326,13 @@ class _LocationSelectionScreen extends State<LocationSelectionScreen> {
         centerTitle: true,
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back), // Icon quay lại
+          onPressed: () {
+            _saveAddress(_address); // Lưu địa chỉ trước khi quay lại
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

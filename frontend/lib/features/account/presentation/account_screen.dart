@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -10,6 +11,17 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   bool _isSwitched = true;
   String _address = 'Vui lòng nhập vị trí của bạn';
+
+  @override void initState() {
+    super.initState();
+    _loadSavedAddress();
+  }
+  Future<void> _loadSavedAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _address = prefs.getString('saved_address') ?? 'Vui lòng nhập vị trí của bạn';
+    });
+  }
   void _showLogoutDialog(BuildContext context) {
     showDialog(
         context: context,

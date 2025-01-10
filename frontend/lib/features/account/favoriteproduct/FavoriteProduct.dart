@@ -33,10 +33,10 @@ class FavoriteProductScreen extends StatelessWidget {
             Row(
               children: [
                 // Product image with smaller size
-                Image.network(
-                  'assets/product_image.png', // Replace with your image asset
-                  width: 100, // Adjusted width
-                  height: 100, // Adjusted height
+                Image.asset(
+                  'assets/skinqua.png', // Replace with your image asset
+                  width: 50, // Adjusted width
+                  height: 50, // Adjusted height
                 ),
                 SizedBox(width: 16),
                 // Product details

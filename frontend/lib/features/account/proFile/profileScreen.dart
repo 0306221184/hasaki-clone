@@ -14,6 +14,9 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
   final TextEditingController _Sdt = TextEditingController();
   final TextEditingController _ngaySinh = TextEditingController();
 
+  // Biến lưu trữ tên hiển thị
+  String _displayName = 'ThanhDanh';
+
   @override
   void dispose() {
     _name.dispose();
@@ -64,7 +67,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
 
   bool _isValidPhoneNumber(String phone) {
     final RegExp regex = RegExp(r'^(03|05|07|08|09)\d{8}$');
-    return regex.hasMatch(phone);
+    return regex.hasMatch(phone) && phone.length == 10;
   }
 
   void _updateAccountInfo() {
@@ -74,14 +77,19 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
       // Kiểm tra các điều kiện và gán thông báo
       if (_name.text.isEmpty && _Sdt.text.isEmpty && _ngaySinh.text.isEmpty) {
         message = 'Vui lòng nhập đầy đủ nội dung';
-      } else if (_Sdt.text.isEmpty) {
+      } else if(_name.text.isEmpty && _Sdt.text.isEmpty){
+        message = 'Vui lòng nhập Tên';
+      }
+      else if (_Sdt.text.isEmpty) {
         message = 'Vui lòng nhập số điện thoại';
       } else if (_ngaySinh.text.isEmpty) {
         message = 'Vui lòng nhập ngày sinh';
       } else if (!_isValidPhoneNumber(_Sdt.text)) {
         message = 'Số điện thoại không đúng định dạng';
-      } else {
+      }
+      else {
         message = 'Cập nhật thành công';
+        _displayName = _name.text;  // Cập nhật tên hiển thị
       }
 
       // Hiển thị thông báo
@@ -127,6 +135,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,7 +155,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
             ),
             SizedBox(height: 8),
             Text(
-              'ThanhDanh',
+              _displayName,  // Hiển thị tên mới
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
