@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/features/authentication/presentation/login_screen.dart';
 import 'package:frontend/features/home/presentation/home_screen.dart';
+import 'package:frontend/features/authentication/presentation/forgot_password_screen.dart';
+import 'package:frontend/features/authentication/presentation/register_screen.dart';
+import 'package:frontend/features/authentication/presentation/reset_password_page.dart';
+import 'package:frontend/features/authentication/presentation/verification_code_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false, // Ẩn thanh debug banner
+      routes: {
+        '/': (context) => LoginPage(),
+        '/login': (context) => LoginPage(),
+        '/register': (context) => RegisterPage(),
+        '/forgot-password': (context) => ForgotPasswordPage(),
+        '/verification-code': (context) => VerificationCodePage(),
+        '/reset-password': (context) => ResetPasswordPage(),
+      },
     );
   }
 }

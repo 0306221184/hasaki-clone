@@ -17,4 +17,5 @@ export const {
   FRONTEND_URL,
   RABBIT_MQ_URL,
   RESEND_API_KEY,
+  BACKEND_URL,
 } = process.env;
