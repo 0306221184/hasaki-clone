@@ -43,7 +43,6 @@ export default class CategoryRepository {
         .select(["id", "name", "description", "parent_id", "icon_url"])
         .from("categories")
         .buildSqlServerQuery();
-      console.log(categoriesQuery);
 
       const categories = await Database.mssql().query(categoriesQuery);
       return categories;
@@ -81,7 +80,6 @@ export default class CategoryRepository {
       const updateCategoryQuery = `UPDATE categories SET name='${name}', description='${description}', parent_id=${
         parent_id ?? "NULL"
       }, icon_url='${icon_url}' WHERE id=${id}`;
-      console.log(updateCategoryQuery);
 
       await Database.mssql().query(updateCategoryQuery);
       return true;

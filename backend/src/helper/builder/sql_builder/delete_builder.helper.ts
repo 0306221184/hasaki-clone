@@ -28,7 +28,7 @@ class DeleteBuilder {
 } //+
 //+
 // Usage example://+
-const deleteBuilder = new DeleteBuilder("users"); //+
-deleteBuilder.where("id = 1"); //+
-const deleteQuery = deleteBuilder.build(); //+
-console.log(deleteQuery); // Output: DELETE FROM users WHERE id = 1//+
+// const deleteBuilder = new DeleteBuilder("users"); //+
+// deleteBuilder.where("id = 1"); //+
+// const deleteQuery = deleteBuilder.build(); //+
+// console.log(deleteQuery); // Output: DELETE FROM users WHERE id = 1//+

@@ -24,9 +24,9 @@ Whishlist
 ---
 
 search product-
-crud cart
-payment
-cancel order if is pending
+crud cart-
+payment-
+cancel order if is pending-
 review product
 promotion
 wishlist

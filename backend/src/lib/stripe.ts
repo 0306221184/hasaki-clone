@@ -62,12 +62,7 @@ class StripeService {
   }
   public createCheckoutSession = async ({
     paymentMethodsType = ["card"],
-    currency = "usd",
-    productName,
-    productDescription,
-    productImages,
-    unitAmount,
-    quantity,
+    lineItems,
     mode = "payment",
     successUrl,
     cancelUrl,
@@ -75,12 +70,7 @@ class StripeService {
     paymentMethodsType?:
       | Stripe.Checkout.SessionCreateParams.PaymentMethodType[]
       | undefined;
-    currency?: string;
-    productName: string;
-    productDescription: string;
-    productImages?: string[] | undefined;
-    unitAmount?: number;
-    quantity?: number;
+    lineItems: Stripe.Checkout.SessionCreateParams.LineItem[];
     mode?: Stripe.Checkout.SessionCreateParams.Mode | undefined;
     successUrl?: string;
     cancelUrl?: string;
@@ -88,20 +78,7 @@ class StripeService {
     try {
       const session = await this.stripe.checkout.sessions.create({
         payment_method_types: paymentMethodsType,
-        line_items: [
-          {
-            price_data: {
-              currency: currency,
-              product_data: {
-                name: productName,
-                description: productDescription,
-                images: productImages,
-              },
-              unit_amount: unitAmount, // $20.00 in cents
-            },
-            quantity: quantity,
-          },
-        ],
+        line_items: lineItems,
         mode: mode, // For one-time payments, use 'payment' mode
         success_url: successUrl, // Redirect on success
         cancel_url: cancelUrl, // Redirect on cancel
