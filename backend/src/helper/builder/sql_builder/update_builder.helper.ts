@@ -46,10 +46,10 @@ class UpdateBuilder {
 }
 
 // Usage example:
-const builder = UpdateBuilder.getInstance("users")
-  .set("name", "John Doe")
-  .set("email", "john.doe@example.com")
-  .where("id = 1");
+// const builder = UpdateBuilder.getInstance("users")
+//   .set("name", "John Doe")
+//   .set("email", "john.doe@example.com")
+//   .where("id = 1");
 
-const updateSql = builder.build();
-console.log(updateSql); // Output: UPDATE users SET name = 'John Doe', email = 'john.doe@example.com' WHERE id = 1;
+// const updateSql = builder.build();
+// console.log(updateSql); // Output: UPDATE users SET name = 'John Doe', email = 'john.doe@example.com' WHERE id = 1;
