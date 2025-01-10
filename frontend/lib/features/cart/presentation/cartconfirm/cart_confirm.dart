@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/cart/presentation/cart_address.dart';
-import 'package:frontend/features/cart/presentation/cart_discount.dart';
-import 'package:frontend/features/cart/presentation/cart_pay.dart';
-import 'package:frontend/features/cart/presentation/cart_screen.dart';
+import 'package:frontend/features/cart/presentation/cartaddress/cart_address.dart';
+import 'package:frontend/features/cart/presentation/cartdiscount/cart_discount.dart';
+import 'package:frontend/features/cart/presentation/cartinfor/cartInfo.dart';
+import 'package:frontend/features/cart/presentation/cartpay/cart_pay.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,7 +34,7 @@ class OrderConfirmationScreen extends StatelessWidget {
           },
         ),
       ),
-      body: SingleChildScrollView(  // Wrap the body in SingleChildScrollView to allow scrolling
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -73,7 +73,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 8),
-                    Text('so nha + ten duong'),
+                    Text('Số nhà + tên đường'),
                   ],
                 ),
               ),
@@ -129,8 +129,8 @@ class OrderConfirmationScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Image.network(
-                      'https://via.placeholder.com/50',
+                    Image.asset(
+                      'assets/skinqua.png',
                       width: 50,
                       height: 50,
                     ),
@@ -146,8 +146,8 @@ class OrderConfirmationScreen extends StatelessWidget {
                           SizedBox(height: 4),
                           Text('Sữa Chống Nắng Dưỡng Da'),
                           SizedBox(height: 4),
-                          Text('Dung tich 55g', style: TextStyle(color: Colors.grey)),
-                          Text('So luong 1', style: TextStyle(color: Colors.grey)),
+                          Text('Dung tích 55g', style: TextStyle(color: Colors.grey)),
+                          Text('Số lượng 1', style: TextStyle(color: Colors.grey)),
                         ],
                       ),
                     ),
@@ -198,7 +198,9 @@ class OrderConfirmationScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) =>OrderDetailsScreen ()));
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         padding: EdgeInsets.symmetric(vertical: 16),

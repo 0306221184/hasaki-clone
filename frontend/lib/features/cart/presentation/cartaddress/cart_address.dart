@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:frontend/features/cart/presentation/cart_confirm.dart';
-import 'package:frontend/features/cart/presentation/cart_screen.dart'; // Assuming this is the next screen
+import 'package:frontend/features/cart/presentation/cartconfirm/cart_confirm.dart';
+import 'package:frontend/features/cart/presentation/cart/cart_screen.dart'; // Assuming this is the next screen
 
 void main() {
   runApp(MyApp());

@@ -34,8 +34,8 @@ class CartItem extends StatelessWidget {
         Container(
           width: 80,
           height: 80,
-          child: Image.network(
-            'https://example.com/image.png', // Replace with actual image URL
+          child: Image.asset(
+            'assets/skinqua.png', // Replace with actual image URL
             fit: BoxFit.cover,
           ),
         ),
