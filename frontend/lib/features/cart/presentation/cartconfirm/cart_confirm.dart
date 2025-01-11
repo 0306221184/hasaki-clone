@@ -3,22 +3,14 @@ import 'package:frontend/features/cart/presentation/cartaddress/cart_address.dar
 import 'package:frontend/features/cart/presentation/cartdiscount/cart_discount.dart';
 import 'package:frontend/features/cart/presentation/cartinfor/cartInfo.dart';
 import 'package:frontend/features/cart/presentation/cartpay/cart_pay.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class OrderConfirmationScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: OrderConfirmationScreen(),
-    );
-  }
+  _OrderConfirmationScreenState createState() => _OrderConfirmationScreenState();
 }
 
-class OrderConfirmationScreen extends StatelessWidget {
+class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
+  String paymentMethod = 'Thanh toán khi nhận hàng (COD)';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,14 +79,24 @@ class OrderConfirmationScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Thanh toán khi nhận hàng (COD)',
+                      paymentMethod,
                       style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                     ),
                     Icon(Icons.arrow_forward_ios, size: 16),
                   ],
                 ),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentMethodScreen()));
+                onTap: () async {
+                  // Mở PaymentMethodScreen và đợi kết quả
+                  final selectedMethod = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PaymentMethodScreen()),
+                  );
+                  // Cập nhật phương thức thanh toán nếu có kết quả trả về
+                  if (selectedMethod != null) {
+                    setState(() {
+                      paymentMethod = selectedMethod;
+                    });
+                  }
                 },
               ),
               Divider(),

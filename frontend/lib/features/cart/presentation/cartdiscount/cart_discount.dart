@@ -78,7 +78,9 @@ class DiscountCodeScreen extends StatelessWidget {
             ),
             const Spacer(),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.lightBlue,
                 minimumSize: const Size(double.infinity, 50),

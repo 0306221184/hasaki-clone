@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/features/cart/data/models/cart_model.dart';
-import 'package:frontend/features/cart/presentation/cartaddress/cart_address.dart'; // Ensure AddressScreen is correctly implemented
-import 'package:frontend/features/cart/presentation/cart/cart_item.dart'; // Ensure CartItem is properly implemented
+import 'package:frontend/features/cart/presentation/cartaddress/cart_address.dart';
+import 'package:frontend/features/cart/presentation/cart/cart_item.dart';
+import 'package:frontend/features/home/presentation/home_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -60,33 +61,44 @@ class _CartScreenState extends State<CartScreen> {
         foregroundColor: Colors.white,
         backgroundColor: Colors.blue,
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomeScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
           Expanded(
             child: quantities.isEmpty
                 ? Center(
-                    child: Text(
-                      'Giỏ hàng không có sản phẩm',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  )
+              child: Text(
+                'Giỏ hàng không có sản phẩm',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            )
                 : ListView.builder(
-                    padding: EdgeInsets.all(16.0),
-                    itemCount: quantities.length,
-                    itemBuilder: (context, index) {
-                      return CartItem(
-                        quantity: quantities[index],
-                        onQuantityChanged: (newQuantity) {
-                          updateQuantity(index, newQuantity);
-                        },
-                        onDelete: () {
-                          _showDeleteDialog(
-                              index); // Show confirmation dialog before deletion
-                        },
-                      );
-                    },
-                  ),
+              padding: EdgeInsets.all(16.0),
+              itemCount: quantities.length,
+              itemBuilder: (context, index) {
+                return CartItem(
+                  quantity: quantities[index],
+                  onQuantityChanged: (newQuantity) {
+                    updateQuantity(index, newQuantity);
+                  },
+                  onDelete: () {
+                    _showDeleteDialog(
+                        index); // Show confirmation dialog before deletion
+                  },
+                );
+              },
+            ),
           ),
           Divider(height: 1, color: Colors.grey),
           Padding(
@@ -127,17 +139,12 @@ class _CartScreenState extends State<CartScreen> {
                   onPressed: quantities.isEmpty
                       ? null // Disable button when cart is empty
                       : () {
-                          CartModel.getInstance().addProduct(Product(
-                            name: "Skin aqua clear white",
-                            quantity: this.quantities[0],
-                            pricePerItem: this.pricePerItem[0],
-                          ));
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddressScreen()),
-                          );
-                        },
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddressScreen()),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: quantities.isEmpty
                         ? Colors.grey // Set a disabled color for the button
@@ -170,7 +177,7 @@ class _CartScreenState extends State<CartScreen> {
         return AlertDialog(
           title: Text('Xóa sản phẩm'),
           content:
-              Text('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?'),
+          Text('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -183,7 +190,6 @@ class _CartScreenState extends State<CartScreen> {
               onPressed: () {
                 removeItem(index); // Gọi hàm xóa sản phẩm
                 Navigator.of(context).pop(); // Đóng hộp thoại sau khi xóa
-                // Kiểm tra nếu giỏ hàng trống, hiển thị thông báo
                 if (quantities.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

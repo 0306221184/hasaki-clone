@@ -9,7 +9,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isLoggedIn = false; // Thêm biến để kiểm tra trạng thái đăng nhập
+  bool isLoggedIn = true; // Thêm biến để kiểm tra trạng thái đăng nhập
 
   @override
   void initState() {
