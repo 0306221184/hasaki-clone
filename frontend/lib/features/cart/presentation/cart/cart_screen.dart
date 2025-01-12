@@ -4,20 +4,6 @@ import 'package:frontend/features/cart/presentation/cartaddress/cart_address.dar
 import 'package:frontend/features/cart/presentation/cart/cart_item.dart';
 import 'package:frontend/features/home/presentation/home_screen.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: CartScreen(),
-    );
-  }
-}
-
 class CartScreen extends StatefulWidget {
   @override
   _CartScreenState createState() => _CartScreenState();
@@ -61,17 +47,6 @@ class _CartScreenState extends State<CartScreen> {
         foregroundColor: Colors.white,
         backgroundColor: Colors.blue,
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-              );
-            },
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -95,7 +70,7 @@ class _CartScreenState extends State<CartScreen> {
                   onDelete: () {
                     _showDeleteDialog(
                         index); // Show confirmation dialog before deletion
-                  },
+                  }, product: null,
                 );
               },
             ),

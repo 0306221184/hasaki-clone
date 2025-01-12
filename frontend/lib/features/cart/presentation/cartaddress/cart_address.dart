@@ -3,20 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:frontend/features/cart/presentation/cartconfirm/cart_confirm.dart';
 import 'package:frontend/features/cart/presentation/cart/cart_screen.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AddressScreen(),
-    );
-  }
-}
-
 class AddressScreen extends StatefulWidget {
   @override
   _AddressScreenState createState() => _AddressScreenState();
@@ -93,13 +79,6 @@ class _AddressScreenState extends State<AddressScreen> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CartScreen()));
-          },
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

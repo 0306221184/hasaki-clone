@@ -1,22 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/features/cart/presentation/cartconfirm/cart_confirm.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: DiscountCodeScreen(),
-    );
-  }
-}
-
 class DiscountCodeScreen extends StatelessWidget {
   const DiscountCodeScreen({Key? key}) : super(key: key);
 

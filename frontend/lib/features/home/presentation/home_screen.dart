@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import '../../account/presentation/account_screen.dart';
+import '../../cart/presentation/cart/cart_screen.dart';
+import '../../category/presentation/category_screen.dart';
+import '../../notification/presentation/notification_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -9,50 +14,39 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isLoggedIn = true; // Thêm biến để kiểm tra trạng thái đăng nhập
+  // bool isLoggedIn = true; // Thêm biến để kiểm tra trạng thái đăng nhập
 
   @override
   void initState() {
     super.initState();
-    checkLoginStatus();
+    // checkLoginStatus();
   }
 
   // Hàm kiểm tra trạng thái đăng nhập
-  void checkLoginStatus() {
-    // TODO: Thêm logic kiểm tra đăng nhập thực tế ở đây
-    if (!isLoggedIn) {
-      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
-      Future.delayed(Duration.zero, () {
-        Navigator.pushReplacementNamed(context, '/login');
-      });
-    }
-  }
+  // void checkLoginStatus() {
+  //   // TODO: Thêm logic kiểm tra đăng nhập thực tế ở đây
+  //   if (!isLoggedIn) {
+  //     // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
+  //     Future.delayed(Duration.zero, () {
+  //       Navigator.pushReplacementNamed(context, '/login');
+  //     });
+  //   }
+  // }
 
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    // Điều hướng đến các màn hình khác nhau dựa trên chỉ số đã chọn
-    switch (_selectedIndex) {
-      case 0:
-        Navigator.pushNamed(context, '/');
-        break;
-      case 1:
-        Navigator.pushNamed(context, '/category');
-        break;
-      case 2:
-        Navigator.pushNamed(context, '/cart');
-        break;
-      case 3:
-        Navigator.pushNamed(context, '/notification');
-        break;
-      case 4:
-        Navigator.pushNamed(context, '/account');
-        break;
-    }
-  }
+  // int _selectedIndex = 0;
+  // static List<Widget> _widgetOptions = <Widget>[
+  //   CategoryScreen(),
+  //   CartScreen(),
+  //   NotificationScreen(),
+  //   AccountScreen(),
+  // ];
+  //
+  // void _onItemTapped(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //   });
+  //   // Điều hướng đến các màn hình khác nhau dựa trên chỉ số đã chọn
+  // }
 
   final List<String> bannerImages = [
     'assets/banner1.jpg',
@@ -450,24 +444,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.category), label: 'Danh mục'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart), label: 'Giỏ hàng'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.notifications), label: 'Thông báo'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Tài khoản'),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black54,
-        showUnselectedLabels: true,
-        showSelectedLabels: true,
-      ),
+      // Center(
+      //   child: _widgetOptions.elementAt(_selectedIndex),
+      // ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const [
+      //     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.category), label: 'Danh mục'),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.shopping_cart), label: 'Giỏ hàng'),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(Icons.notifications), label: 'Thông báo'),
+      //     BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Tài khoản'),
+      //   ],
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      //   selectedItemColor: Colors.black,
+      //   unselectedItemColor: Colors.black54,
+      //   showUnselectedLabels: true,
+      //   showSelectedLabels: true,
+      // ),
     );
   }
 
