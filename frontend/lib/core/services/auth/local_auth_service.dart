@@ -17,7 +17,11 @@ class LocalAuthService implements IAuthService {
 
   @override
   Future<UserType> createUser(
-      {required String email, required String password}) async {
+      {required String email,
+      required String password,
+      required String fullName,
+      required String birthDate,
+      required String gender}) async {
     try {
       // Tạo user mới với email và password
       final response = await http.post(
@@ -26,6 +30,9 @@ class LocalAuthService implements IAuthService {
         body: jsonEncode({
           'email': email,
           'password': password,
+          'fullName': fullName,
+          'birthDate': birthDate,
+          'gender': gender,
         }),
       );
       if (response.statusCode == 200) {
@@ -109,11 +116,24 @@ class LocalAuthService implements IAuthService {
   }
 
   @override
-  Future<void> logout() async {
+  Future<bool> logout() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('access_token');
-      this.currentUser = null;
+      final response = await http.post(
+        Uri.parse('${backendUrl}/api/v1/auth/logout'),
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': 'Bearer ${this.currentUser!.accessToken}',
+          'userId': this.currentUser!.id.toString(),
+        },
+      );
+      if (response.statusCode == 200) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('access_token');
+        this.currentUser = null;
+        return true;
+      } else {
+        throw Exception(jsonDecode(response.body)['message']);
+      }
     } catch (e) {
       throw e;
     }

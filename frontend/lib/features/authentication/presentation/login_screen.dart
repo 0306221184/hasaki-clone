@@ -165,21 +165,25 @@ class _LoginPageState extends State<LoginPage> {
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
-      await Provider.of<AuthProvider>(context, listen: false)
-          .login(_usernameController.text, _passwordController.text);
-      // Xóa dữ liệu sau khi đăng nhập thành công
-      _usernameController.clear();
-      _passwordController.clear();
+      try {
+        await Provider.of<AuthProvider>(context, listen: false)
+            .login(_usernameController.text, _passwordController.text);
+        // Xóa dữ liệu sau khi đăng nhập thành công
+        _usernameController.clear();
+        _passwordController.clear();
 
-      _showDialog('Đăng nhập thành công', Colors.white);
+        _showDialog('Đăng nhập thành công', Colors.white);
 
-      // Điều hướng tới trang chủ sau khi đăng nhập thành công
-      if (Provider.of<AuthProvider>(context, listen: false).currentUser !=
-          null) {
-        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-      } else {
-        _showDialog(
-            'Vui lòng điền đầy đủ thông tin và kiểm tra lại', Colors.white);
+        // Điều hướng tới trang chủ sau khi đăng nhập thành công
+        if (Provider.of<AuthProvider>(context, listen: false).currentUser !=
+            null) {
+          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+        } else {
+          _showDialog(
+              'Vui lòng điền đầy đủ thông tin và kiểm tra lại', Colors.white);
+        }
+      } catch (e) {
+        _showDialog('Đăng nhập thất bại', Colors.red);
       }
     }
   }

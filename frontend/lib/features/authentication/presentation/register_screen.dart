@@ -230,36 +230,41 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // Handle registration
   void _register() async {
-    // if (_formKey.currentState!.validate()) {
-    // if (validateName(_nameController.text) != null) {
-    //   _showDialog('Tên không hợp lệ');
-    //   return;
-    // }
+    try {
+      if (_formKey.currentState!.validate()) {
+        if (validateName(_nameController.text) != null) {
+          _showDialog('Tên không hợp lệ');
+          return;
+        }
 
-    // if (validatePassword(_passwordController.text) != null) {
-    //   _showDialog('Mật khẩu không hợp lệ');
-    //   return;
-    // }
+        if (validatePassword(_passwordController.text) != null) {
+          _showDialog('Mật khẩu không hợp lệ');
+          return;
+        }
 
-    // if (_gender == null) {
-    //   _showDialog('Vui lòng chọn giới tính');
-    //   return;
-    // }
+        if (_gender == null) {
+          _showDialog('Vui lòng chọn giới tính');
+          return;
+        }
 
-    // if (!_acceptTerms) {
-    //   _showDialog('Bạn cần đồng ý với điều khoản và chính sách bảo mật');
-    //   return;
-    // }
-    await Provider.of<AuthProvider>(context, listen: false)
-        .register(_emailPhoneController.text, _passwordController.text);
-    if (Provider.of<AuthProvider>(context, listen: false).currentUser != null) {
-      Navigator.pushReplacementNamed(context, '/');
-      // Future.delayed(const Duration(seconds: 2), () {
-      //   _sendVerificationCode();
-      //   _showCodeDialog();
-      // });
+        if (!_acceptTerms) {
+          _showDialog('Bạn cần đồng ý với điều khoản và chính sách bảo mật');
+          return;
+        }
+        await Provider.of<AuthProvider>(context, listen: false).register(
+            _emailPhoneController.text,
+            _passwordController.text,
+            _nameController.text,
+            _dobController.text,
+            _gender!);
+        if (Provider.of<AuthProvider>(context, listen: false).currentUser !=
+            null) {
+          Navigator.pushReplacementNamed(context, '/');
+        }
+      }
+    } catch (e) {
+      _showDialog('Đăng ký thất bại: $e');
     }
-    // }
   }
 
   // Show code dialog

@@ -55,6 +55,14 @@ class AuthRoute implements IRoute {
       AuthMiddleware.getInstance().authentication,
       this.controller.logout
     );
+    // Get all users
+    this.router.get("/auth/users", this.controller.getAllUsers);
+    // Get user by ID
+    this.router.get(
+      "/auth/users/:id",
+      AuthMiddleware.getInstance().authentication,
+      this.controller.getUserById
+    );
   }
 }
 

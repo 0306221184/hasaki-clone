@@ -10,8 +10,16 @@ class AuthService implements IAuthService {
   Future<UserType> createUser({
     required String email,
     required String password,
+    required String fullName,
+    required String birthDate,
+    required String gender,
   }) =>
-      authService.createUser(email: email, password: password);
+      authService.createUser(
+          email: email,
+          password: password,
+          fullName: fullName,
+          birthDate: birthDate,
+          gender: gender);
 
   @override
   UserType? get currentUser => authService.currentUser;
@@ -24,7 +32,7 @@ class AuthService implements IAuthService {
       authService.login(email: email, password: password);
 
   @override
-  Future<void> logout() => authService.logout();
+  Future<bool> logout() => authService.logout();
 
   @override
   Future<void> sendEmailVerification() => authService.sendEmailVerification();

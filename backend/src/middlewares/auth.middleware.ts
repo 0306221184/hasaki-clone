@@ -41,13 +41,14 @@ export default class AuthMiddleware {
   public async authentication(req: Request, res: Response, next: NextFunction) {
     try {
       const token = req?.headers?.authorization?.split(" ")[1];
-      const refreshTokenInCookie = req?.cookies?.refreshToken;
+      const userId = req?.headers?.userid;
+      // const refreshTokenInCookie = req?.cookies?.refreshToken;
 
-      if (!refreshTokenInCookie) {
-        return next(
-          new AlreadyLogoutAuthException("Refresh token not found in cookie!!")
-        );
-      }
+      // if (!refreshTokenInCookie) {
+      //   return next(
+      //     new AlreadyLogoutAuthException("Refresh token not found in cookie!!")
+      //   );
+      // }
 
       if (token) {
         // Verify Access Token
@@ -57,8 +58,12 @@ export default class AuthMiddleware {
           async (err, user: any) => {
             if (err) {
               // If access token is invalid/expired, verify refresh token
+              const refreshToken = await Database.mssql().query(
+                "SELECT refresh_token FROM [users] WHERE id=@userId",
+                { userId: userId }
+              );
               jwt.verify(
-                refreshTokenInCookie,
+                refreshToken?.refresh_token,
                 JWT_REFRESH_TOKEN_SECRET_KEY as string,
                 async (rErr, rUser: any) => {
                   if (rErr) {
@@ -92,13 +97,6 @@ export default class AuthMiddleware {
                 "SELECT refresh_token FROM [users] WHERE id=@userId",
                 { userId: user?.id }
               );
-
-              if (
-                !dbResult?.refresh_token ||
-                dbResult.refresh_token !== refreshTokenInCookie
-              ) {
-                return next(new AlreadyLogoutAuthException());
-              }
 
               user.refresh_token = dbResult.refresh_token;
               req.user = user;

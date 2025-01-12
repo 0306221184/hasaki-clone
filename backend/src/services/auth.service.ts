@@ -17,7 +17,7 @@ export default class AuthService {
     this.cartRepository = new CartRepository();
   }
 
-  async register(email, password) {
+  async register(email, password, fullName, birthDate, gender) {
     try {
       const [hashPassword, isExistUser] = await Promise.all([
         Bcrypt.getInstance().hashPassword(password),
@@ -28,6 +28,9 @@ export default class AuthService {
         const newUser = await this.repository.createUser({
           email: email,
           password: hashPassword,
+          fullName: fullName,
+          birthDate: birthDate,
+          gender: gender,
         });
 
         await this.cartRepository.createCart(newUser.id);
@@ -146,6 +149,20 @@ export default class AuthService {
       });
       await RedisClient.getInstance().delete(redisKey);
       return true;
+    } catch (error) {
+      throw error;
+    }
+  };
+  public getAllUsers = async () => {
+    try {
+      return await this.repository.getAllUsers();
+    } catch (error) {
+      throw error;
+    }
+  };
+  public getUserById = async (id: number) => {
+    try {
+      return await this.repository.getUserById(id);
     } catch (error) {
       throw error;
     }

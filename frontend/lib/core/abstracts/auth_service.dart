@@ -2,8 +2,12 @@ abstract class IAuthService {
   UserType? get currentUser;
   Future<UserType> login({required String email, required String password});
   Future<UserType> createUser(
-      {required String email, required String password});
-  Future<void> logout();
+      {required String email,
+      required String password,
+      required String fullName,
+      required String birthDate,
+      required String gender});
+  Future<bool> logout();
   Future<void> sendEmailVerification();
   Future<void> sendResetPassword(String email);
   Future<void> deleteUser();

@@ -14,8 +14,14 @@ export default class AuthController {
   }
   public register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { email, password } = req.body;
-      const registerUser = await this.authServices.register(email, password);
+      const { email, password, fullName, birthDate, gender } = req.body;
+      const registerUser = await this.authServices.register(
+        email,
+        password,
+        fullName,
+        birthDate,
+        gender
+      );
       TokenUtilities.getInstance().sendRefreshTokenToCookie(
         res,
         registerUser?.refresh_token
@@ -173,6 +179,37 @@ export default class AuthController {
       if (verifyEmailResult) {
         res.status(StatusCode.OK).send(`<h1>Email verify successfully!!</h1>`);
       }
+    } catch (error) {
+      next(error);
+    }
+  };
+  public getAllUsers = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const users = await this.authServices.getAllUsers();
+      res.status(StatusCode.OK).json({
+        status: "OK",
+        data: users,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  public getUserById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const user = await this.authServices.getUserById(userId);
+      res.status(StatusCode.OK).json({
+        status: "OK",
+        data: user,
+      });
     } catch (error) {
       next(error);
     }

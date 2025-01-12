@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final authProvider =
         Provider.of<AuthProvider>(context, listen: false); // Lấy authProvider
     authProvider.loadUser().then((_) {
-      print(authProvider.currentUser?.email);
       if (authProvider.currentUser == null) {
         Navigator.pushReplacementNamed(context, '/login');
       }
