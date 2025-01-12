@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:frontend/core/providers/auth_provider.dart';
+import 'package:frontend/core/services/auth/auth_service.dart';
 import 'package:frontend/features/authentication/presentation/login_screen.dart';
 import 'dart:async';
+
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,7 +20,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailPhoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
-  final TextEditingController _verificationCodeController = TextEditingController();
+  final TextEditingController _verificationCodeController =
+      TextEditingController();
 
   bool _obscurePassword = true; // Toggle password visibility
   String? _gender; // Gender
@@ -224,35 +229,37 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   // Handle registration
-  void _register() {
-    if (_formKey.currentState!.validate()) {
-      if (validateName(_nameController.text) != null) {
-        _showDialog('Tên không hợp lệ');
-        return;
-      }
+  void _register() async {
+    // if (_formKey.currentState!.validate()) {
+    // if (validateName(_nameController.text) != null) {
+    //   _showDialog('Tên không hợp lệ');
+    //   return;
+    // }
 
-      if (validatePassword(_passwordController.text) != null) {
-        _showDialog('Mật khẩu không hợp lệ');
-        return;
-      }
+    // if (validatePassword(_passwordController.text) != null) {
+    //   _showDialog('Mật khẩu không hợp lệ');
+    //   return;
+    // }
 
-      if (_gender == null) {
-        _showDialog('Vui lòng chọn giới tính');
-        return;
-      }
+    // if (_gender == null) {
+    //   _showDialog('Vui lòng chọn giới tính');
+    //   return;
+    // }
 
-      if (!_acceptTerms) {
-        _showDialog('Bạn cần đồng ý với điều khoản và chính sách bảo mật');
-        return;
-      }
-
-      _showDialog('Mã xác nhận sẽ được gửi đến email của bạn.');
-
-      Future.delayed(const Duration(seconds: 2), () {
-        _sendVerificationCode();
-        _showCodeDialog();
-      });
+    // if (!_acceptTerms) {
+    //   _showDialog('Bạn cần đồng ý với điều khoản và chính sách bảo mật');
+    //   return;
+    // }
+    await Provider.of<AuthProvider>(context, listen: false)
+        .register(_emailPhoneController.text, _passwordController.text);
+    if (Provider.of<AuthProvider>(context, listen: false).currentUser != null) {
+      Navigator.pushReplacementNamed(context, '/');
+      // Future.delayed(const Duration(seconds: 2), () {
+      //   _sendVerificationCode();
+      //   _showCodeDialog();
+      // });
     }
+    // }
   }
 
   // Show code dialog

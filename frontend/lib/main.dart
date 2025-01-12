@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/providers/auth_provider.dart';
 import 'package:frontend/features/account/favoriteproduct/FavoriteProduct.dart';
 import 'package:frontend/features/account/newproduct/newproductScreen.dart';
 import 'package:frontend/features/account/order/orderScreen.dart';
@@ -14,6 +15,7 @@ import 'package:frontend/features/category/presentation/category_screen.dart';
 import 'package:frontend/features/home/presentation/home_screen.dart';
 import 'package:frontend/features/notification/presentation/notification_screen.dart';
 import 'package:frontend/features/cart/presentation/cart/cart_screen.dart';
+import 'package:provider/provider.dart';
 import 'features/account/changepassword/changePasswordScreen.dart';
 import 'features/account/location/locationScreen.dart';
 import 'features/account/location/test.dart';
@@ -22,7 +24,14 @@ import 'features/account/proFile/profileScreen.dart';
 import 'features/account/trademark/trademarkscreen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

@@ -14,7 +14,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     });
 
     if (index == 0) {
-      Navigator.pushNamed(context, '/home');
+      Navigator.pushNamed(context, '/');
     } else if (index == 1) {
       Navigator.pushNamed(context, '/category');
     } else if (index == 2) {

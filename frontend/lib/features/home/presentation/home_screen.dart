@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:frontend/core/abstracts/auth_service.dart';
+import 'package:frontend/core/config/constants.dart';
+import 'package:frontend/core/providers/auth_provider.dart';
+import 'package:frontend/core/services/auth/auth_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -9,23 +17,66 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isLoggedIn = false; // Thêm biến để kiểm tra trạng thái đăng nhập
+  List<dynamic> products = []; // Danh sách sản phẩm
+  List<dynamic> categories = []; // Danh sách danh mục
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  // Kiểm tra trạng thái đăng nhập
+  void checkLoginStatus() {
+    final authProvider =
+        Provider.of<AuthProvider>(context, listen: false); // Lấy authProvider
+    authProvider.loadUser().then((_) {
+      print(authProvider.currentUser?.email);
+      if (authProvider.currentUser == null) {
+        Navigator.pushReplacementNamed(context, '/login');
+      }
+    });
+  }
+
+  Future<void> fetchProducts() async {
+    try {
+      final response =
+          await http.get(Uri.parse('${backendUrl}/api/v1/product'));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        setState(() {
+          products = json['data'] as List; // Ép kiểu thành List
+        });
+      } else {
+        print('Lỗi khi tải dữ liệu sản phẩm: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Lỗi kết nối: $e');
+    }
+  }
+
+  Future<void> fetchCategories() async {
+    try {
+      final response =
+          await http.get(Uri.parse('http://localhost:3001/api/v1/category'));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        setState(() {
+          categories = json['data'] as List; // Ép kiểu thành List
+        });
+      } else {
+        print('Lỗi khi tải dữ liệu danh mục: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Lỗi kết nối: $e');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     checkLoginStatus();
-  }
-
-  // Hàm kiểm tra trạng thái đăng nhập
-  void checkLoginStatus() {
-    // TODO: Thêm logic kiểm tra đăng nhập thực tế ở đây
-    if (!isLoggedIn) {
-      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
-      Future.delayed(Duration.zero, () {
-        Navigator.pushReplacementNamed(context, '/login');
-      });
-    }
+    fetchProducts();
+    fetchCategories(); // Gọi hàm để tải danh mục
   }
 
   int _selectedIndex = 0;
@@ -189,68 +240,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisSpacing: 10.0,
                           childAspectRatio: 1.5,
                         ),
-                        itemCount: 14,
+                        itemCount: categories.length,
                         itemBuilder: (context, index) {
-                          List<String> images = [
-                            'assets/3ce.jpg',
-                            'assets/TD_mat.jpg',
-                            'assets/mat.jpg',
-                            'assets/matna.jpg',
-                            'assets/srm.jpg',
-                            'assets/daugoi.jpg',
-                            'assets/kcn.jpg',
-                            'assets/suatam.jpg',
-                            'assets/taytrang.jpg',
-                            'assets/kdr.jpg',
-                            'assets/khumui.jpg',
-                            'assets/duongtoc.jpg',
-                            'assets/ddvs.jpg',
-                            'assets/nuochoa.jpg',
-                          ];
-
-                          List<String> productNames = [
-                            'Trang Điểm Môi',
-                            'Trang Điểm Mặt',
-                            'Trang Điểm Mắt',
-                            'Mặt Nạ',
-                            'Sữa Rửa Mặt',
-                            'Dầu Gội và Dầu Xả',
-                            'Chống Nắng Da Mặt',
-                            'Sữa Tắm',
-                            'Tẩy Trang Mặt',
-                            'Chăm Sóc Răng Miệng',
-                            'Khử Mùi',
-                            'Serum / Dầu Dưỡng Tóc',
-                            'Chăm Sóc Phụ Nữ',
-                            'Nước Hoa',
-                          ];
-
-                          List<Color> colors = [
-                            Colors.green.shade100,
-                            Colors.blue.shade100,
-                            Colors.orange.shade100,
-                            Colors.red.shade100,
-                            Colors.pink.shade100,
-                            Colors.purple.shade100,
-                            Colors.yellow.shade100,
-                            Colors.cyan.shade100,
-                            Colors.teal.shade100,
-                            Colors.brown.shade100,
-                            Colors.amber.shade100,
-                            Colors.indigo.shade100,
-                            Colors.lime.shade100,
-                            Colors.deepPurple.shade100,
-                          ];
-
-                          String imagePath = images[index % images.length];
-                          String productName =
-                              productNames[index % productNames.length];
-                          Color itemColor = colors[index % colors.length];
+                          final category = categories[index];
                           return Container(
                             width: 100,
                             height: 150,
                             decoration: BoxDecoration(
-                              color: itemColor,
+                              color: Colors
+                                  .primaries[index % Colors.primaries.length]
+                                  .shade100,
                               borderRadius: BorderRadius.circular(15.0),
                             ),
                             child: Column(
@@ -261,16 +260,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(15.0)),
-                                    child: Image.asset(
-                                      imagePath,
+                                    child: Image.network(
+                                      category['icon_url'] ?? '',
                                       fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Icon(Icons.error);
+                                      },
                                     ),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    productName,
+                                    category['name'] ?? '',
                                     style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold),
@@ -393,54 +396,67 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisSpacing: 5.0,
                           childAspectRatio: 0.6,
                         ),
-                        itemCount: 6,
-                        itemBuilder: (context, index) => Container(
-                          height: 150,
-                          margin: EdgeInsets.symmetric(vertical: 5.0),
-                          decoration: BoxDecoration(
-                            color:
-                                Colors.accents[index % Colors.accents.length],
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(15.0)),
-                                  child: Image.asset(
-                                    'assets/product${index + 1}.jpg',
-                                    fit: BoxFit.cover,
+                        itemCount: products.length,
+                        itemBuilder: (context, index) {
+                          final product = products[index]
+                              as Map<String, dynamic>; // Ép kiểu thành Map
+                          return Container(
+                            height: 150,
+                            margin: EdgeInsets.symmetric(vertical: 5.0),
+                            decoration: BoxDecoration(
+                              color:
+                                  Colors.accents[index % Colors.accents.length],
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(15.0)),
+                                    child: Image.network(
+                                      product['image_url'] as String,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: Text('${(index + 1) * 100000} đ',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: Text('Tên sản phẩm ${index + 1}'),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: Text('Đánh giá: ⭐⭐⭐⭐',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                    ),
-                                  ],
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Text('${product['price']} đ',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Text(product['name'] as String),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Row(
+                                          children: [
+                                            Text('Đánh giá: ',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            Text('⭐' *
+                                                (product['rating'] as double)
+                                                    .toInt()),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],

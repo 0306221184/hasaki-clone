@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/providers/auth_provider.dart';
+import 'package:frontend/core/services/auth/google_service.dart';
 import 'package:frontend/features/authentication/presentation/register_screen.dart';
 import 'package:frontend/features/authentication/presentation/forgot_password_screen.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,6 +29,20 @@ class _LoginPageState extends State<LoginPage> {
     if (value == null || value.isEmpty) {
       return 'Vui lòng nhập email';
     }
+    void checkLoginStatus() {
+      final authProvider =
+          Provider.of<AuthProvider>(context, listen: false); // Lấy authProvider
+      authProvider.loadUser().then((_) {
+        if (authProvider.currentUser != null) {
+          Navigator.pushReplacementNamed(context, '/');
+        }
+      });
+    }
+
+    void initState() {
+      super.initState();
+      checkLoginStatus();
+    }
 
     final RegExp emailRegex =
         RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
@@ -48,26 +65,6 @@ class _LoginPageState extends State<LoginPage> {
       return 'Mật khẩu phải từ 6 đến 32 ký tự';
     }
     return null;
-  }
-
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      // Xóa dữ liệu sau khi đăng nhập thành công
-      _usernameController.clear();
-      _passwordController.clear();
-
-      _showDialog('Đăng nhập thành công', Colors.white);
-
-      // Điều hướng tới trang chủ sau khi đăng nhập thành công
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/', // Route tới trang Home
-        (Route<dynamic> route) => false, // Loại bỏ tất cả các route trước đó
-      );
-    } else {
-      _showDialog(
-          'Vui lòng điền đầy đủ thông tin và kiểm tra lại', Colors.white);
-    }
   }
 
   void _showDialog(String message, Color color) {
@@ -137,10 +134,19 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _showDialog(
-                            'Đăng nhập Google thành công', Colors.white);
+                      onPressed: () async {
+                        try {
+                          final account =
+                              await GoogleSignInService().signInWithGoogle();
+                          if (account != null) {
+                            print("User logged in: ${account}");
+                          }
+                          // Navigator.of(context).pop();
+                          // _showDialog(
+                          //     'Đăng nhập Google thành công', Colors.white);
+                        } catch (e) {
+                          print("Lỗi đăng nhập: $e");
+                        }
                       },
                       child: const Text(
                         'Tiếp tục',
@@ -155,6 +161,27 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
     );
+  }
+
+  void _submit() async {
+    if (_formKey.currentState!.validate()) {
+      await Provider.of<AuthProvider>(context, listen: false)
+          .login(_usernameController.text, _passwordController.text);
+      // Xóa dữ liệu sau khi đăng nhập thành công
+      _usernameController.clear();
+      _passwordController.clear();
+
+      _showDialog('Đăng nhập thành công', Colors.white);
+
+      // Điều hướng tới trang chủ sau khi đăng nhập thành công
+      if (Provider.of<AuthProvider>(context, listen: false).currentUser !=
+          null) {
+        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      } else {
+        _showDialog(
+            'Vui lòng điền đầy đủ thông tin và kiểm tra lại', Colors.white);
+      }
+    }
   }
 
   @override

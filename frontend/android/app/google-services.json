@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "891264751332",
+    "project_id": "hasaki-4267b",
+    "storage_bucket": "hasaki-4267b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891264751332:android:1808650aecf4e70f44bef1",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "891264751332-upt88q3hjlspeh22gghjk99oohamfq8j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.frontend",
+            "certificate_hash": "60f23aeb09056c3409d35c2a57e225ed892a875b"
+          }
+        },
+        {
+          "client_id": "891264751332-rg7cnh9u71h3j72o362h9pfts3vklmdj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMa_6foyhcwfYz912SsolguZWhDIeHW5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "891264751332-rg7cnh9u71h3j72o362h9pfts3vklmdj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "891264751332-u3p1ngsldmc0l2eo3emt4aevdhgqk5et.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hasaki"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,24 +1,23 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:frontend/core/abstracts/auth_service.dart';
-import 'package:frontend/core/services/auth/firebase_auth_service.dart';
+import 'package:frontend/core/services/auth/local_auth_service.dart';
 
 class AuthService implements IAuthService {
   final IAuthService authService;
   const AuthService(this.authService);
-  factory AuthService.firebase() => AuthService(FirebaseAuthService());
+  factory AuthService.local() => AuthService(LocalAuthService());
 
   @override
-  Future<User> createUser({
+  Future<UserType> createUser({
     required String email,
     required String password,
   }) =>
       authService.createUser(email: email, password: password);
 
   @override
-  User? get currentUser => authService.currentUser;
+  UserType? get currentUser => authService.currentUser;
 
   @override
-  Future<User> login({
+  Future<UserType> login({
     required String email,
     required String password,
   }) =>
@@ -29,9 +28,6 @@ class AuthService implements IAuthService {
 
   @override
   Future<void> sendEmailVerification() => authService.sendEmailVerification();
-
-  @override
-  Future<void> initialize() => authService.initialize();
 
   @override
   Future<void> sendResetPassword(String email) =>
