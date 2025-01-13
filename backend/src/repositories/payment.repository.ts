@@ -7,8 +7,15 @@ export default class PaymentRepository {
   public createOrder = async (
     user_id: number,
     currency: string = "usd",
-    note: string = ""
+    note: string = "",
+    promotion_code?: string,
+    phone_number?: string,
+    address?: {
+      street: string;
+      city: string;
+    }
   ) => {
+    await Database.mssql().beginTransaction();
     try {
       const cartItems = await Database.mssql().query(
         "SELECT product_id, quantity, price, total_price FROM carts INNER JOIN cart_items ON carts.id = cart_items.cart_id WHERE carts.user_id = @user_id",
@@ -16,73 +23,62 @@ export default class PaymentRepository {
           user_id,
         }
       );
+      const promotion = await Database.mssql().query(
+        "SELECT id FROM promotions WHERE code = @promotion_code",
+        {
+          promotion_code,
+        }
+      );
       if (cartItems == null) {
         throw new Error("Cart is empty");
       }
 
-      if (Array.isArray(cartItems)) {
-        const total = cartItems.reduce(
-          (acc, item) => acc + item.total_price,
-          0
-        );
-        const insertOrderSql =
-          "INSERT INTO orders (user_id, note, total_amount, currency, order_status) VALUES (@user_id, @note, @total_amount, @currency, @order_status) SELECT SCOPE_IDENTITY() AS id;";
-        const orderCreated = await Database.mssql().query(insertOrderSql, {
-          user_id,
-          note,
-          total_amount: total,
-          currency,
-          order_status: "pending",
-        });
-        cartItems.forEach(async (item) => {
-          const insertOrderDetailsSql = InsertBuilder.getInstance()
-            .into("order_details")
-            .column(["order_id", "product_id", "quantity"])
-            .values([[orderCreated.id, item.product_id, item.quantity]])
-            .buildSqlServerInsert();
-          const addToWishlistQuery = InsertBuilder.getInstance()
-            .into("wish_lists")
-            .column(["user_id", "product_id"])
-            .values([[user_id, item.product_id]])
-            .buildSqlServerInsert();
+      const total = Array.isArray(cartItems)
+        ? cartItems.reduce((acc, item) => acc + item.total_price, 0)
+        : cartItems.total_price;
 
-          await Promise.all([
-            Database.mssql().query(insertOrderDetailsSql),
-            Database.mssql().query(addToWishlistQuery),
-          ]);
-          return true;
-        });
-      } else {
-        const total = cartItems.total_price;
+      const insertAddressSql =
+        "INSERT INTO addresses (user_id, street_address, city) VALUES (@user_id, @street_address, @city) SELECT SCOPE_IDENTITY() AS id;";
+      const addressCreated = await Database.mssql().query(insertAddressSql, {
+        user_id,
+        street_address: address?.street,
+        city: address?.city,
+      });
 
-        const insertOrderSql =
-          "INSERT INTO orders (user_id, note, total_amount, currency, order_status) VALUES (@user_id, @note, @total_amount, @currency, @order_status) SELECT SCOPE_IDENTITY() AS id;";
-        const orderCreated = await Database.mssql().query(insertOrderSql, {
-          user_id,
-          note,
-          total_amount: total,
-          currency,
-          order_status: "pending",
-        });
+      const insertShippingSql =
+        "INSERT INTO shipping (address_id, phone_number) VALUES (@address_id, @phone_number) SELECT SCOPE_IDENTITY() AS id;";
+      const shippingCreated = await Database.mssql().query(insertShippingSql, {
+        address_id: addressCreated?.id,
+        phone_number: phone_number,
+      });
+
+      const insertOrderSql =
+        "INSERT INTO orders (user_id, note, total_amount, currency, order_status, shipping_id, promotion_id) VALUES (@user_id, @note, @total_amount, @currency, @order_status, @shipping_id, @promotion_id) SELECT SCOPE_IDENTITY() AS id;";
+      const orderCreated = await Database.mssql().query(insertOrderSql, {
+        user_id,
+        note,
+        total_amount: total,
+        currency,
+        order_status: "pending",
+        shipping_id: shippingCreated?.id,
+        promotion_id: promotion?.id,
+      });
+
+      const orderDetailsPromises = cartItems.map(async (item) => {
         const insertOrderDetailsSql = InsertBuilder.getInstance()
           .into("order_details")
           .column(["order_id", "product_id", "quantity"])
-          .values([[orderCreated.id, cartItems.product_id, cartItems.quantity]])
+          .values([[orderCreated.id, item.product_id, item.quantity]])
           .buildSqlServerInsert();
 
-        const addToWishlistQuery = InsertBuilder.getInstance()
-          .into("wish_lists")
-          .column(["user_id", "product_id"])
-          .values([[user_id, cartItems.product_id]])
-          .buildSqlServerInsert();
-        await Promise.all([
-          Database.mssql().query(insertOrderDetailsSql),
-          Database.mssql().query(addToWishlistQuery),
-        ]);
-        return true;
-      }
-      return false;
+        return Database.mssql().query(insertOrderDetailsSql);
+      });
+
+      await Promise.all(orderDetailsPromises);
+      await Database.mssql().commitTransaction();
+      return orderCreated;
     } catch (error) {
+      await Database.mssql().rollbackTransaction();
       throw error;
     }
   };
@@ -226,6 +222,17 @@ export default class PaymentRepository {
         { order_id }
       );
       return true;
+    } catch (error) {
+      throw error;
+    }
+  };
+  public getOrderById = async (order_id: number) => {
+    try {
+      const order = await Database.mssql().query(
+        "SELECT orders.*, promotions.discount_percentage AS promotion_discount_percentage FROM orders INNER JOIN promotions ON orders.promotion_id = promotions.id WHERE orders.id = @order_id",
+        { order_id }
+      );
+      return order;
     } catch (error) {
       throw error;
     }
