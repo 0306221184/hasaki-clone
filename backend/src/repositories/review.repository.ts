@@ -30,4 +30,28 @@ export default class ReviewRepository {
       throw error;
     }
   };
+
+  public getReviewsByUserId = async (userId: string) => {
+    try {
+      const result = await Database.mssql().query(
+        `SELECT * FROM reviews WHERE user_id = @userId`,
+        { userId }
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  public getReviewsByProductId = async (productId: string) => {
+    try {
+      const result = await Database.mssql().query(
+        `SELECT * FROM reviews WHERE product_id = @productId`,
+        { productId }
+      );
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  };
 }

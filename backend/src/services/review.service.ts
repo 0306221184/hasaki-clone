@@ -34,4 +34,22 @@ export default class ReviewService {
       throw error;
     }
   };
+
+  public getReviewsByUserId = async (userId: string) => {
+    try {
+      const reviews = await this.repository.getReviewsByUserId(userId);
+      return reviews;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  public getReviewsByProductId = async (productId: string) => {
+    try {
+      const reviews = await this.repository.getReviewsByProductId(productId);
+      return reviews;
+    } catch (error) {
+      throw error;
+    }
+  };
 }

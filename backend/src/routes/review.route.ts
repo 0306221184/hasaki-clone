@@ -15,6 +15,16 @@ class ReviewRoute implements IRoute {
     this.router.post("/reviews", this.controller.createReview);
     // Get all reviews
     this.router.get("/reviews", this.controller.getReviews);
+    // Get reviews by user_id
+    this.router.get(
+      "/reviews/user/:userId",
+      this.controller.getReviewsByUserId
+    );
+    // Get reviews by product_id
+    this.router.get(
+      "/reviews/product/:productId",
+      this.controller.getReviewsByProductId
+    );
   }
 }
 

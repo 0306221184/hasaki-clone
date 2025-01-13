@@ -61,9 +61,12 @@ export default class PaymentService {
   public createPaymentIntent = async (order_id: number) => {
     try {
       const order = await this.repository.getOrderById(order_id);
+      const promotion = order?.promotion_discount_percentage
+        ? order?.promotion_discount_percentage
+        : 0;
       const paymentIntent =
         await StripeService.getInstance().createPaymentIntent(
-          order?.total_amount,
+          order?.total_amount - (order?.total_amount * promotion) / 100,
           order?.currency
         );
       return paymentIntent;

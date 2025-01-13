@@ -229,7 +229,7 @@ export default class PaymentRepository {
   public getOrderById = async (order_id: number) => {
     try {
       const order = await Database.mssql().query(
-        "SELECT * FROM orders WHERE id = @order_id",
+        "SELECT orders.*, promotions.discount_percentage AS promotion_discount_percentage FROM orders INNER JOIN promotions ON orders.promotion_id = promotions.id WHERE orders.id = @order_id",
         { order_id }
       );
       return order;

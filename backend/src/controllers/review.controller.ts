@@ -48,4 +48,40 @@ export default class ReviewController {
       next(error);
     }
   };
+
+  public getReviewsByUserId = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { userId } = req.params;
+      const reviews = await this.reviewService.getReviewsByUserId(userId);
+      res.status(StatusCodes.OK).json({
+        status: "OK",
+        message: "Reviews retrieved successfully!",
+        data: reviews,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getReviewsByProductId = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { productId } = req.params;
+      const reviews = await this.reviewService.getReviewsByProductId(productId);
+      res.status(StatusCodes.OK).json({
+        status: "OK",
+        message: "Reviews retrieved successfully!",
+        data: reviews,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
