@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/features/account/location/locationScreen.dart';
+import 'package:frontend/features/account/review/reviewscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../changepassword/changePasswordScreen.dart';
+import '../favoriteproduct/FavoriteProduct.dart';
+import '../newproduct/newproductScreen.dart';
+import '../order/orderScreen.dart';
+import '../proFile/profileScreen.dart';
+import '../trademark/trademarkscreen.dart';
+import '../voucher/voucherScreen.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -105,8 +115,11 @@ class _AccountScreenState extends State<AccountScreen> {
                     padding: EdgeInsets.all(10.0),
                     child: InkWell(
                       onTap: () async {
-                        final updatedAddress =
-                            await Navigator.pushNamed(context, '/location');
+                        final updatedAddress = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    LocationSelectionScreen()));
                         if (updatedAddress != null) {
                           setState(() {
                             _address = updatedAddress.toString();
@@ -160,7 +173,10 @@ class _AccountScreenState extends State<AccountScreen> {
                             icon: const Icon(Icons.new_releases,
                                 color: Colors.green),
                             onPressed: () {
-                              Navigator.pushNamed(context, '/order');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => OrderScreen()));
                             },
                           ),
                           const Text('Mới đặt'),
@@ -172,7 +188,10 @@ class _AccountScreenState extends State<AccountScreen> {
                             icon:
                                 const Icon(Icons.pending, color: Colors.green),
                             onPressed: () {
-                              Navigator.pushNamed(context, '/order');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => OrderScreen()));
                             },
                           ),
                           const Text('Đang xử lý'),
@@ -184,7 +203,10 @@ class _AccountScreenState extends State<AccountScreen> {
                             icon: const Icon(Icons.check_circle,
                                 color: Colors.green),
                             onPressed: () {
-                              Navigator.pushNamed(context, '/order');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => OrderScreen()));
                             },
                           ),
                           const Text('Thành công'),
@@ -195,7 +217,10 @@ class _AccountScreenState extends State<AccountScreen> {
                           IconButton(
                             icon: const Icon(Icons.cancel, color: Colors.green),
                             onPressed: () {
-                              Navigator.pushNamed(context, '/order');
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => OrderScreen()));
                             },
                           ),
                           const Text('Đã huỷ'),
@@ -339,8 +364,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                   Navigator.pushNamedAndRemoveUntil(
                                       context, '/login', (route) => false);
                                 },
-                                icon: const Text('Đăng xuất'),
-                                label: const Icon(Icons.logout),
+                                icon: const Icon(Icons.logout),
+                                label: const Text('Đăng xuất'),
                                 style: TextButton.styleFrom(
                                   foregroundColor: Colors.black,
                                 ),
@@ -357,10 +382,9 @@ class _AccountScreenState extends State<AccountScreen> {
           ],
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.home),
+    );
+  }
+}
       //       label: 'Trang chủ',
       //     ),
       //     BottomNavigationBarItem(
@@ -377,6 +401,3 @@ class _AccountScreenState extends State<AccountScreen> {
       //     ),
       //   ],
       // ),
-    );
-  }
-}
