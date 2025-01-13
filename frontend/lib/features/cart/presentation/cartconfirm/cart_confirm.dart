@@ -3,9 +3,11 @@ import 'package:frontend/features/cart/presentation/cartaddress/cart_address.dar
 import 'package:frontend/features/cart/presentation/cartdiscount/cart_discount.dart';
 import 'package:frontend/features/cart/presentation/cartinfor/cartInfo.dart';
 import 'package:frontend/features/cart/presentation/cartpay/cart_pay.dart';
+
 class OrderConfirmationScreen extends StatefulWidget {
   @override
-  _OrderConfirmationScreenState createState() => _OrderConfirmationScreenState();
+  _OrderConfirmationScreenState createState() =>
+      _OrderConfirmationScreenState();
 }
 
 class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
@@ -19,12 +21,6 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => AddressScreen()));
-          },
-        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -45,14 +41,17 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     Row(
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.blue[100],
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
                             'Nhà riêng',
-                            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         SizedBox(width: 8),
@@ -80,7 +79,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   children: [
                     Text(
                       paymentMethod,
-                      style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Colors.blue, fontWeight: FontWeight.bold),
                     ),
                     Icon(Icons.arrow_forward_ios, size: 16),
                   ],
@@ -89,7 +89,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   // Mở PaymentMethodScreen và đợi kết quả
                   final selectedMethod = await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PaymentMethodScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => PaymentMethodScreen()),
                   );
                   // Cập nhật phương thức thanh toán nếu có kết quả trả về
                   if (selectedMethod != null) {
@@ -107,7 +108,10 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                 title: Text('Mã giảm giá'),
                 trailing: Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => DiscountCodeScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DiscountCodeScreen()));
                 },
               ),
               Divider(),
@@ -148,12 +152,15 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                           SizedBox(height: 4),
                           Text('Sữa Chống Nắng Dưỡng Da'),
                           SizedBox(height: 4),
-                          Text('Dung tích 55g', style: TextStyle(color: Colors.grey)),
-                          Text('Số lượng 1', style: TextStyle(color: Colors.grey)),
+                          Text('Dung tích 55g',
+                              style: TextStyle(color: Colors.grey)),
+                          Text('Số lượng 1',
+                              style: TextStyle(color: Colors.grey)),
                         ],
                       ),
                     ),
-                    Text('150.000 đ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('150.000 đ',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -176,7 +183,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Tạm tính (1)', style: TextStyle(color: Colors.grey)),
+                      Text('Tạm tính (1)',
+                          style: TextStyle(color: Colors.grey)),
                       Text('150.000 đ', style: TextStyle(color: Colors.grey)),
                     ],
                   ),
@@ -192,8 +200,11 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Tổng thanh toán (đã VAT)', style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('150.000 đ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+                      Text('Tổng thanh toán (đã VAT)',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('150.000 đ',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.red)),
                     ],
                   ),
                   SizedBox(height: 16),
@@ -201,13 +212,20 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) =>OrderDetailsScreen ()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OrderDetailsScreen()));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         padding: EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: Text('Đặt hàng', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                      child: Text('Đặt hàng',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white)),
                     ),
                   ),
                 ],
