@@ -11,12 +11,6 @@ class OrderDetailsScreen extends StatelessWidget {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen()));
-          },
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -65,7 +59,8 @@ class OrderDetailsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Thông tin vận chuyển:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text('Thông tin vận chuyển:',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         Text('Express: VN123456789'),
         SizedBox(height: 8),
         ElevatedButton(
@@ -80,7 +75,8 @@ class OrderDetailsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Địa chỉ nhận hàng', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text('Địa chỉ nhận hàng',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         Text('User - 0123456789'),
         Text('10/10 nguyen van a, tỉnh bà rịa vũng tàu'),
       ],
@@ -119,8 +115,10 @@ class OrderDetailsScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('Thành tiền:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        Text('150.000đ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text('Thành tiền:',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text('150.000đ',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
       ],
     );
   }
@@ -129,7 +127,8 @@ class OrderDetailsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Mã đơn hàng: 251NH8015T', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text('Mã đơn hàng: 251NH8015T',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         Text('Phương thức thanh toán: Thanh toán khi nhận hàng'),
         Text('Thời gian đặt hàng: 01-01-2025 12:00'),
         Text('Thời gian đơn vị vận chuyển lấy hàng: 02-01-2025 06:00'),
@@ -144,12 +143,14 @@ class OrderDetailsScreen extends StatelessWidget {
         ElevatedButton(
           onPressed: () {},
           child: Text('Đã nhận được hàng'),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.black),
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white, foregroundColor: Colors.black),
         ),
         ElevatedButton(
           onPressed: () {},
           child: Text('Theo dõi đơn'),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red, foregroundColor: Colors.white),
         ),
       ],
     );

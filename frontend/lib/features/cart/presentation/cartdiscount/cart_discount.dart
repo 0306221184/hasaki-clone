@@ -12,15 +12,6 @@ class DiscountCodeScreen extends StatelessWidget {
         backgroundColor: Colors.lightBlue,
         foregroundColor: Colors.white,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => OrderConfirmationScreen()));
-          },
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
