@@ -1,4 +1,6 @@
 import PaymentRepository from "../repositories/payment.repository";
+import StripeService from "../lib/stripe";
+
 export default class PaymentService {
   private readonly repository: PaymentRepository;
   constructor(repository: PaymentRepository = new PaymentRepository()) {
@@ -7,10 +9,23 @@ export default class PaymentService {
   public createOrder = async (
     user_id: number,
     currency: string = "usd",
-    note: string = ""
+    note: string = "",
+    promotion_code?: string,
+    phone_number?: string,
+    address?: {
+      street: string;
+      city: string;
+    }
   ) => {
     try {
-      const result = await this.repository.createOrder(user_id, currency, note);
+      const result = await this.repository.createOrder(
+        user_id,
+        currency,
+        note,
+        promotion_code,
+        phone_number,
+        address
+      );
       return result;
     } catch (error) {
       throw error;
@@ -39,6 +54,19 @@ export default class PaymentService {
     try {
       const result = await this.repository.cancelOrder(order_id);
       return result;
+    } catch (error) {
+      throw error;
+    }
+  };
+  public createPaymentIntent = async (order_id: number) => {
+    try {
+      const order = await this.repository.getOrderById(order_id);
+      const paymentIntent =
+        await StripeService.getInstance().createPaymentIntent(
+          order?.total_amount,
+          order?.currency
+        );
+      return paymentIntent;
     } catch (error) {
       throw error;
     }

@@ -60,6 +60,24 @@ class StripeService {
       throw error;
     }
   }
+
+  // Create a payment intent
+  public async createPaymentIntent(
+    amount: number,
+    currency: string
+  ): Promise<Stripe.PaymentIntent> {
+    try {
+      const paymentIntent = await this.stripe.paymentIntents.create({
+        amount,
+        currency,
+        confirm: false,
+      });
+      return paymentIntent;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public createCheckoutSession = async ({
     paymentMethodsType = ["card"],
     lineItems,
