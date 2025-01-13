@@ -28,19 +28,19 @@ class AuthRoute implements IRoute {
     //Register
     this.router.post("/auth/register", this.controller.register);
     //google login
-    this.router.get(
-      "/auth/google/login",
-      passport.authenticate("google", {
-        session: false,
-        scope: ["profile", "email"],
-      })
-    );
+//     this.router.get(
+//       "/auth/google/login",
+//       passport.authenticate("google", {
+//         session: false,
+//         scope: ["profile", "email"],
+//       })
+//     );
     //google login callback
-    this.router.get(
-      "/auth/google/login/callback",
-      passport.authenticate("google", { session: false }),
-      this.controller.googleLogin
-    );
+//     this.router.get(
+//       "/auth/google/login/callback",
+//       passport.authenticate("google", { session: false }),
+//       this.controller.googleLogin
+//     );
     //local login
     this.router.post(
       "/auth/local/login",

@@ -36,7 +36,7 @@ export default class AuthController {
       next(error);
     }
   };
-  public login = async (req: Request, res: Response, next: NextFunction) => {
+  public login = async (req, res: Response, next: NextFunction) => {
     try {
       TokenUtilities.getInstance().sendRefreshTokenToCookie(
         res,
@@ -66,22 +66,22 @@ export default class AuthController {
       next(error);
     }
   };
-  public googleLogin = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      TokenUtilities.getInstance().sendRefreshTokenToCookie(
-        res,
-        req?.user?.refresh_token
-      );
-      res.redirect(`${FRONTEND_URL}?userId=${req?.user?.id}`);
-    } catch (error) {
-      next(error);
-    }
-  };
-  public logout = async (req: Request, res: Response, next: NextFunction) => {
+//   public googleLogin = async (
+//     req: Request,
+//     res: Response,
+//     next: NextFunction
+//   ) => {
+//     try {
+//       TokenUtilities.getInstance().sendRefreshTokenToCookie(
+//         res,
+//         req?.user?.refresh_token
+//       );
+//       res.redirect(`${FRONTEND_URL}?userId=${req?.user?.id}`);
+//     } catch (error) {
+//       next(error);
+//     }
+//   };
+  public logout = async (req, res: Response, next: NextFunction) => {
     try {
       if (!req.user) {
         throw new NotLoggedInException();

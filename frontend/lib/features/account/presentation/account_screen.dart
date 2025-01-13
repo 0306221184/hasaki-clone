@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/providers/auth_provider.dart';
+import 'package:frontend/features/authentication/presentation/login_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/features/account/location/locationScreen.dart';
 import 'package:frontend/features/account/review/reviewscreen.dart';
@@ -361,8 +362,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                   Provider.of<AuthProvider>(context,
                                           listen: false)
                                       .logout();
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, '/login', (route) => false);
+                                  Navigator.push(
+                                      context, MaterialPageRoute(builder: (context)=>LoginPage()));
                                 },
                                 icon: const Icon(Icons.logout),
                                 label: const Text('Đăng xuất'),

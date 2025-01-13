@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/features/category/presentation/detailedlist.dart';
+import 'package:http/http.dart' as http;
+import '../../../core/config/constants.dart';
+import '../../account/newproduct/newproductScreen.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
@@ -7,46 +11,60 @@ class CategoryScreen extends StatefulWidget {
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
 }
-
 class _CategoryScreenState extends State<CategoryScreen> {
   int selectedIndex = 0;
+  List<dynamic> products = [];
+  List<dynamic> categories = [];
+  Map<int, List<dynamic>> groupedCategories = {}; // Grouped by parent_id
 
-  final List<List<Widget>> categoryItems = [
-    [
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Mỹ phẩm High-End'),
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Chăm sóc da mặt'),
-    ],
-    [
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Trang điểm'),
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Trang điểm cao cấp'),
-    ],
-    [
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Chăm sóc Tóc'),
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Chăm sóc Da đầu'),
-    ],
-    [
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Chăm sóc cơ thể'),
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Sản phẩm cơ thể'),
-    ],
-    [
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Chăm sóc cá nhân'),
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Vệ sinh cá nhân'),
-    ],
-    [
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Nước hoa A'),
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Nước hoa B'),
-    ],
-    [
-      CategoryItem(
-          imageUrl: 'assets/skinqua.png', label: 'Thực phẩm chức năng A'),
-      CategoryItem(
-          imageUrl: 'assets/skinqua.png', label: 'Thực phẩm chức năng B'),
-    ],
-    [
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Phiếu mua hàng A'),
-      CategoryItem(imageUrl: 'assets/skinqua.png', label: 'Phiếu mua hàng B'),
-    ],
-  ];
+  Future<void> fetchProducts() async {
+    try {
+      final response = await http.get(Uri.parse('${backendUrl}/api/v1/product'));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        setState(() {
+          products = json['data'] as List;
+        });
+      } else {
+        print('Error loading products: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Connection error: $e');
+    }
+  }
+
+  Future<void> fetchCategories() async {
+    try {
+      final response = await http.get(Uri.parse('http://localhost:3001/api/v1/category'));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        List<dynamic> rawCategories = json['data'] as List;
+
+        // Group categories by parent_id
+        Map<int, List<dynamic>> grouped = {};
+        for (var category in rawCategories) {
+          int? parentId = category['parent_id'];
+          grouped.putIfAbsent(parentId ?? 0, () => []).add(category);
+        }
+
+        setState(() {
+          categories = grouped[0] ?? []; // Top-level categories
+          groupedCategories = grouped;
+        });
+      } else {
+        print('Error loading categories: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Connection error: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+    fetchCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,170 +97,49 @@ class _CategoryScreenState extends State<CategoryScreen> {
       ),
       body: Row(
         children: [
+          // Parent categories list
           Container(
             width: 200,
-            child: ListView(
-              children: [
-                ListTile(
+            child: ListView.builder(
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                return ListTile(
                   title: Text(
-                    'Chăm sóc da mặt',
+                    categories[index]['name'] ?? 'N/A',
                     style: TextStyle(
-                      fontSize: selectedIndex == 0 ? 18 : 14,
-                      color: selectedIndex == 0
-                          ? Colors.blue
-                          : Colors.black, // Chữ màu xanh khi được chọn
+                      fontSize: selectedIndex == index ? 18 : 14,
+                      color: selectedIndex == index ? Colors.blue : Colors.black,
                     ),
                   ),
-                  selected: selectedIndex == 0,
-                  selectedTileColor:
-                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
+                  selected: selectedIndex == index,
+                  selectedTileColor: Colors.blue.shade100,
                   onTap: () {
                     setState(() {
-                      selectedIndex = 0;
+                      selectedIndex = index;
                     });
                   },
-                ),
-                ListTile(
-                  title: Text(
-                    'Trang điểm',
-                    style: TextStyle(
-                      fontSize: selectedIndex == 1 ? 18 : 14,
-                      color: selectedIndex == 1
-                          ? Colors.blue
-                          : Colors.black, // Chữ màu xanh khi được chọn
-                    ),
-                  ),
-                  selected: selectedIndex == 1,
-                  selectedTileColor:
-                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
-                  onTap: () {
-                    setState(() {
-                      selectedIndex = 1;
-                    });
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Chăm sóc Tóc và Da đầu',
-                    style: TextStyle(
-                      fontSize: selectedIndex == 2 ? 18 : 14,
-                      color: selectedIndex == 2
-                          ? Colors.blue
-                          : Colors.black, // Chữ màu xanh khi được chọn
-                    ),
-                  ),
-                  selected: selectedIndex == 2,
-                  selectedTileColor:
-                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
-                  onTap: () {
-                    setState(() {
-                      selectedIndex = 2;
-                    });
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Chăm sóc cơ thể',
-                    style: TextStyle(
-                      fontSize: selectedIndex == 3 ? 18 : 14,
-                      color: selectedIndex == 3
-                          ? Colors.blue
-                          : Colors.black, // Chữ màu xanh khi được chọn
-                    ),
-                  ),
-                  selected: selectedIndex == 3,
-                  selectedTileColor:
-                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
-                  onTap: () {
-                    setState(() {
-                      selectedIndex = 3;
-                    });
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Chăm sóc cá nhân',
-                    style: TextStyle(
-                      fontSize: selectedIndex == 4 ? 18 : 14,
-                      color: selectedIndex == 4
-                          ? Colors.blue
-                          : Colors.black, // Chữ màu xanh khi được chọn
-                    ),
-                  ),
-                  selected: selectedIndex == 4,
-                  selectedTileColor:
-                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
-                  onTap: () {
-                    setState(() {
-                      selectedIndex = 4;
-                    });
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Nước hoa',
-                    style: TextStyle(
-                      fontSize: selectedIndex == 5 ? 18 : 14,
-                      color: selectedIndex == 5
-                          ? Colors.blue
-                          : Colors.black, // Chữ màu xanh khi được chọn
-                    ),
-                  ),
-                  selected: selectedIndex == 5,
-                  selectedTileColor:
-                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
-                  onTap: () {
-                    setState(() {
-                      selectedIndex = 5;
-                    });
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Thực phẩm chức năng',
-                    style: TextStyle(
-                      fontSize: selectedIndex == 6 ? 18 : 14,
-                      color: selectedIndex == 6
-                          ? Colors.blue
-                          : Colors.black, // Chữ màu xanh khi được chọn
-                    ),
-                  ),
-                  selected: selectedIndex == 6,
-                  selectedTileColor:
-                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
-                  onTap: () {
-                    setState(() {
-                      selectedIndex = 6;
-                    });
-                  },
-                ),
-                ListTile(
-                  title: Text(
-                    'Phiếu mua hàng',
-                    style: TextStyle(
-                      fontSize: selectedIndex == 7 ? 18 : 14,
-                      color: selectedIndex == 7
-                          ? Colors.blue
-                          : Colors.black, // Chữ màu xanh khi được chọn
-                    ),
-                  ),
-                  selected: selectedIndex == 7,
-                  selectedTileColor:
-                      Colors.blue.shade100, // Màu nền xanh dương khi được chọn
-                  onTap: () {
-                    setState(() {
-                      selectedIndex = 7;
-                    });
-                  },
-                ),
-              ],
+                );
+              },
             ),
           ),
           VerticalDivider(thickness: 1, width: 1),
+          // Child categories grid
           Expanded(
-            child: GridView.count(
-              crossAxisCount: 2,
-              children: categoryItems[selectedIndex],
+            child: GridView.builder(
+              padding: EdgeInsets.all(8.0),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+              ),
+              itemCount: groupedCategories[categories[selectedIndex]['id']]?.length ?? 0,
+              itemBuilder: (context, index) {
+                var childCategory = groupedCategories[categories[selectedIndex]['id']]![index];
+                return CategoryItem(
+                  imageUrl: childCategory['icon_url'] ?? '',
+                  label: childCategory['name'] ?? 'Unknown',
+                );
+              },
             ),
           ),
         ],
@@ -267,7 +164,7 @@ class CategoryItem extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => detailedList(),
+            builder: (context) => detailedList(), // Replace with your detailed list screen
           ),
         );
       },
@@ -283,9 +180,9 @@ class CategoryItem extends StatelessWidget {
               Expanded(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
+                  child: Image.network(
                     imageUrl,
-                    fit: BoxFit.cover, // Đảm bảo hình ảnh vừa khung hình
+                    fit: BoxFit.cover,
                     width: double.infinity,
                   ),
                 ),

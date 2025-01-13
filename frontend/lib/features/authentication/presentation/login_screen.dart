@@ -311,9 +311,13 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 20),
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(
+                        // Navigator.pushNamed(
+                        //   context,
+                        //   '/register',
+                        // );
+                        Navigator.push(
                           context,
-                          '/register',
+                         MaterialPageRoute(builder: (context)=>RegisterPage())
                         );
                       },
                       child: const Text(
