@@ -8,7 +8,7 @@ class CartItem extends StatelessWidget {
   CartItem({
     required this.quantity,
     required this.onQuantityChanged,
-    required this.onDelete,
+    required this.onDelete, required product,
   });
 
   int pricePerItem = 150000; // Price per item
