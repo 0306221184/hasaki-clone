@@ -2,7 +2,7 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "target": "es2016",
-    "module": "commonjs",
+    "module": "CommonJS",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strictPropertyInitialization": false,
@@ -12,7 +12,8 @@
     "noImplicitAny": false,
   },
   "include": [
-    "index.ts"
+    "index.ts",
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"
