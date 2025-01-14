@@ -153,4 +153,12 @@ export default class ProductService {
       throw error;
     }
   };
+  public getProductByCategory = async (categoryId: number) => {
+    try {
+      const products = await this.repository.getProductByCategory(categoryId);
+      return products;
+    } catch (error) {
+      throw error;
+    }
+  };
 }

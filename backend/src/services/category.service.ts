@@ -77,4 +77,12 @@ export default class CategoryService {
       throw error;
     }
   };
+  public getSubCategory = async (categoryId) => {
+    try {
+      const result = await this.repository.getSubCategory(categoryId);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  };
 }
