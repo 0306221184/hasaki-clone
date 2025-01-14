@@ -146,4 +146,23 @@ export default class CategoryController {
       next(error);
     }
   };
+  public getSubCategory = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { categoryId } = req.params;
+      const subCategories = await this.categoryService.getSubCategory(
+        parseInt(categoryId)
+      );
+      res.status(StatusCodes.OK).json({
+        status: "OK",
+        message: "Get sub category successfully!!",
+        data: subCategories,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

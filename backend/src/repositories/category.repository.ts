@@ -96,4 +96,17 @@ export default class CategoryRepository {
       throw error;
     }
   };
+  public getSubCategory = async (categoryId) => {
+    try {
+      const getSubCategorySql = `SELECT B.*
+      FROM categories A INNER JOIN  categories B ON A.id = B.parent_id
+      WHERE A.id = @categoryId`;
+      const subCategories = await Database.mssql().query(getSubCategorySql, {
+        categoryId: categoryId,
+      });
+      return subCategories;
+    } catch (error) {
+      throw error;
+    }
+  };
 }

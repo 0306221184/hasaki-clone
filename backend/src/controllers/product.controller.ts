@@ -213,4 +213,23 @@ export default class ProductController {
       next(error);
     }
   };
+  public getProductByCategory = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { categoryId } = req.params;
+      const products = await this.productService.getProductByCategory(
+        parseInt(categoryId)
+      );
+      res.status(StatusCodes.OK).json({
+        status: "OK",
+        message: "Get product by category successfully!!",
+        data: products,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

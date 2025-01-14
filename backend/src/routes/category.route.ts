@@ -17,6 +17,11 @@ class CategoryRoute implements IRoute {
     this.router.get("/category", this.controller.getManyCategories);
     //GET one Category
     this.router.get("/category/:categoryId", this.controller.getOneCategory);
+    //GET sub of one Category
+    this.router.get(
+      "/category/sub/:categoryId",
+      this.controller.getSubCategory
+    );
     //DELETE many Categorys
     // this.router.delete("/category", this.controller.deleteManyCategorys); //pending
     //DELETE one Category
