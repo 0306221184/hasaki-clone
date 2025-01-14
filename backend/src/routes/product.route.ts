@@ -18,6 +18,11 @@ class ProductRoute implements IRoute {
     this.router.get("/search/product", this.controller.searchProducts);
     //GET one product
     this.router.get("/product/:productId", this.controller.getOneProduct);
+    //GET product by category
+    this.router.get(
+      "/product/category/:categoryId",
+      this.controller.getProductByCategory
+    );
     //DELETE many products
     // this.router.delete("/product", this.controller.deleteManyProducts); //pending
     //DELETE one product

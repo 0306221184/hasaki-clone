@@ -235,4 +235,19 @@ export default class ProductRepository {
       throw error;
     }
   };
+  public getProductByCategory = async (categoryId: number) => {
+    try {
+      const getProductByCategorySql = `
+        SELECT * FROM products 
+        WHERE category_id = @categoryId
+        OR category_id IN (SELECT parent_id FROM categories WHERE id = @categoryId)
+      `;
+      const products = await Database.mssql().query(getProductByCategorySql, {
+        categoryId: categoryId,
+      });
+      return products;
+    } catch (error) {
+      throw error;
+    }
+  };
 }
