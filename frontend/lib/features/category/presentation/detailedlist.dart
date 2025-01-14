@@ -1,19 +1,118 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/category/presentation/catalogproducts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async'; // Import this for Timer
+import '../../../core/config/constants.dart';
 
-class detailedList extends StatelessWidget {
-  final List<Map<String, String>> cards = [
-    {'image': 'https://example.com/image1.jpg', 'text': 'Card 1'},
-    {'image': 'https://example.com/image2.jpg', 'text': 'Card 2'},
-    {'image': 'https://example.com/image3.jpg', 'text': 'Card 3'},
-    {'image': 'https://example.com/image4.jpg', 'text': 'Card 4'},
-  ];
+class DetailedList extends StatefulWidget {
+  final String categoryId;
+  DetailedList(this.categoryId);
+
+  @override
+  _DetailedListState createState() => _DetailedListState();
+}
+
+class _DetailedListState extends State<DetailedList> {
+  List<dynamic> products = [];
+  List<dynamic> categories = [];
+  TextEditingController searchController = TextEditingController();
+  Timer? _debounce;
+  bool isLoadingProducts = true;  // Added this line
+  bool isLoadingCategories = true; // Added this line
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+    fetchCategories();
+    searchController.addListener(onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    searchController.removeListener(onSearchChanged);
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> fetchProducts() async {
+    try {
+      final response = await http.get(Uri.parse('${backendUrl}/api/v1/product/category/${widget.categoryId}'));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        if (json['data'] != null) {
+          setState(() {
+            products = List<dynamic>.from(json['data']);
+            isLoadingProducts = false; // Added this line
+            print("Products loaded: ${products.length}");
+          });
+        } else {
+          setState(() {
+            isLoadingProducts = false; // Added this line
+            print('No products found.');
+          });
+        }
+      } else {
+        setState(() {
+          isLoadingProducts = false; // Added this line
+          print('Error loading products: ${response.statusCode}');
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isLoadingProducts = false; // Added this line
+        print('Connection error: $e');
+      });
+    }
+  }
+
+  Future<void> fetchCategories() async {
+    try {
+      final response = await http.get(Uri.parse('${backendUrl}/api/v1/category'));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        setState(() {
+          categories = List<dynamic>.from(json['data']);
+          isLoadingCategories = false; // Added this line
+        });
+      } else {
+        setState(() {
+          isLoadingCategories = false; // Added this line
+          print('Error loading categories: ${response.statusCode}');
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isLoadingCategories = false; // Added this line
+        print('Connection error: $e');
+      });
+    }
+  }
+
+  void onSearchChanged() {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      final query = searchController.text.toLowerCase();
+      if (query.isNotEmpty) {
+        setState(() {
+          products = products.where((product) {
+            final name = product['name']?.toLowerCase() ?? '';
+            return name.startsWith(query);
+          }).toList();
+        });
+      } else {
+        fetchProducts(); // Fetch all products when the query is empty
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
+          controller: searchController,
           decoration: InputDecoration(
             hintText: 'Tìm kiếm',
             prefixIcon: Icon(Icons.search),
@@ -34,7 +133,9 @@ class detailedList extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
+      body: isLoadingProducts || isLoadingCategories  // Added this line
+          ? Center(child: CircularProgressIndicator()) // Added this line
+          : ListView(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -42,71 +143,13 @@ class detailedList extends StatelessWidget {
               height: 250,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: cards.length,
+                itemCount: categories.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Card(
-                      elevation: 4,
-                      shadowColor: Colors.grey.withOpacity(1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  catalogproducts(cards[index]['text']!),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          width: 170,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(12),
-                                    topRight: Radius.circular(12),
-                                  ),
-                                  child: Image.network(
-                                    cards[index]['image']!,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Center(
-                                        child:
-                                            Icon(Icons.broken_image, size: 50),
-                                      );
-                                    },
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  cards[index]['text']!,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    child: _buildCategoryCard(
+                      categories[index]['image_url'],
+                      categories[index]['name'],
                     ),
                   );
                 },
@@ -117,79 +160,101 @@ class detailedList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Wrap(
-              spacing: 20.0, // Khoảng cách giữa các thẻ
-              runSpacing: 20.0, // Khoảng cách giữa các hàng
-              alignment: WrapAlignment.center, // Canh giữa các thẻ
-              children: [
-                _buildProductCard(
-                  'Obagi',
-                  'Kem Dưỡng Obagi Retinal 1.0% Trẻ Hóa Da, Ngừa Mụn',
-                  '1,480,000đ',
-                  4.0,
-                  12,
-                ),
-                _buildProductCard(
-                  'Skin Aqua UV Body',
-                  'Sữa Chống Nắng Sunday Skin Aqua UV Body PA+++',
-                  '120,000đ',
-                  4.7,
-                  115,
-                ),
-                _buildProductCard(
-                  'Skin Aqua UV Body',
-                  'Sữa Chống Nắng Sunday Skin Aqua UV Body PA+++',
-                  '120,000đ',
-                  4.7,
-                  115,
-                ),
-                _buildProductCard(
-                  'Obagi',
-                  'Kem Dưỡng Obagi Retinal 1.0% Trẻ Hóa Da, Ngừa Mụn',
-                  '1,480,000đ',
-                  4.0,
-                  12,
-                ),
-              ],
+              spacing: 20.0,
+              runSpacing: 20.0,
+              alignment: WrapAlignment.center,
+              children: products.map((product) {
+                return _buildProductCard(
+                  product['image_url'] ?? 'https://via.placeholder.com/160x100',
+                  product['name'] ?? 'No Name',
+                  product['description'] ?? 'No Description',
+                  '${product['price'] ?? 'No Price'}đ',
+                  product['rating']?.toDouble() ?? 0.0,
+                  product['reviewCount'] ?? 0,
+                );
+              }).toList(),
             ),
-          ),
+          )
         ],
       ),
     );
   }
 
-  Widget _buildProductCard(String title, String description, String price,
-      double rating, int reviewCount) {
+  Widget _buildCategoryCard(String? imageUrl, String? title) {
     return Container(
-      width: 170, // Đặt chiều rộng của mỗi thẻ
-      height: 280,
+      width: 170,
+      child: Card(
+        elevation: 4,
+        shadowColor: Colors.grey.withOpacity(1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: InkWell(
+          onTap: () {},
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
+                  child: Image.network(
+                    imageUrl ?? 'https://via.placeholder.com/160x100',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Center(child: Icon(Icons.broken_image, size: 50));
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  title ?? 'No Title',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProductCard(String imageUrl, String title, String description, String price, double rating, int reviewCount) {
+    return Container(
+      width: 220,
+      height: 300,
       child: Card(
         elevation: 10,
-        shadowColor: Colors.grey.withOpacity(1), // Màu của viền mờ
+        shadowColor: Colors.grey.withOpacity(0.5),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15), // Bo tròn góc của thẻ
+          borderRadius: BorderRadius.circular(15),
         ),
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Bạn có thể bỏ ghi chú để hiển thị hình ảnh nếu cần
-              // Image.network(
-              // image, width: 160,
-              // // Đặt chiều rộng của ảnh cho phù hợp với thẻ
-              // height: 100, // Đặt chiều cao của ảnh
-              // fit: BoxFit.cover, // Đảm bảo ảnh vừa khung và cắt nếu cần
-              // ),
-              // SizedBox(height: 8.0),
+              Image.network(
+                imageUrl,
+                width: 160,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(height: 8.0),
               Text(
                 title,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8.0),
-              Text(
-                description,
-                softWrap: true, // Tự động xuống hàng khi văn bản quá dài
-              ),
+              Text(description, softWrap: true),
               SizedBox(height: 8.0),
               Text(price, style: TextStyle(color: Colors.red)),
               SizedBox(height: 8.0),

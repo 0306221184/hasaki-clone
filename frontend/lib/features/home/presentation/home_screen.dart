@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> fetchCategories() async {
     try {
       final response =
-          await http.get(Uri.parse('http://localhost:3001/api/v1/category'));
+          await http.get(Uri.parse('${backendUrl}/api/v1/category'));
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         setState(() {

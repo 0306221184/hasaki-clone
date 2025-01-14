@@ -1,8 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../../../core/config/constants.dart';
+import '../../account/newproduct/newproductScreen.dart';
 
-class catalogproducts extends StatelessWidget {
-  final String category;
-  catalogproducts(this.category);
+class CatalogProduct extends StatefulWidget {
+  final String category; CatalogProduct(this.category, {required List products});
+  @override _CatalogProductsState createState() => _CatalogProductsState();
+}
+
+class _CatalogProductsState extends State<CatalogProduct> {
+  List<dynamic> products = [];
+  @override void initState() {
+    super.initState();
+    fetchProducts(); }
+
+  Future<void> fetchProducts() async {
+    try {
+      final response = await http.get(Uri.parse('${backendUrl}/api/v1/product'));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        setState(() {
+          products = json['data'] as List;
+        });
+      } else {
+        print('Error loading products: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Connection error: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/features/category/presentation/detailedlist.dart';
 import 'package:http/http.dart' as http;
 import '../../../core/config/constants.dart';
-import '../../account/newproduct/newproductScreen.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
@@ -15,11 +14,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
   int selectedIndex = 0;
   List<dynamic> products = [];
   List<dynamic> categories = [];
+
   Map<int, List<dynamic>> groupedCategories = {}; // Grouped by parent_id
 
   Future<void> fetchProducts() async {
     try {
-      final response = await http.get(Uri.parse('${backendUrl}/api/v1/product'));
+      final response = await http.get(
+          Uri.parse('${backendUrl}/api/v1/product'));
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         setState(() {
@@ -35,12 +36,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   Future<void> fetchCategories() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:3001/api/v1/category'));
+      final response = await http.get(
+          Uri.parse('${backendUrl}/api/v1/category'));
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         List<dynamic> rawCategories = json['data'] as List;
 
-        // Group categories by parent_id
+        // Xử lý grouping
         Map<int, List<dynamic>> grouped = {};
         for (var category in rawCategories) {
           int? parentId = category['parent_id'];
@@ -48,16 +50,19 @@ class _CategoryScreenState extends State<CategoryScreen> {
         }
 
         setState(() {
-          categories = grouped[0] ?? []; // Top-level categories
+          categories = grouped[0] ?? []; // Danh mục cha cấp cao nhất
           groupedCategories = grouped;
         });
       } else {
         print('Error loading categories: ${response.statusCode}');
+        // Hiển thị thông báo lỗi hoặc UI thay thế
       }
     } catch (e) {
       print('Connection error: $e');
+      // Hiển thị thông báo lỗi hoặc UI thay thế
     }
   }
+
 
   @override
   void initState() {
@@ -95,9 +100,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ),
         ],
       ),
-      body: Row(
+      body: categories.isEmpty
+          ? Center(child: CircularProgressIndicator()) // Hiển thị khi đang tải
+          : Row(
         children: [
-          // Parent categories list
+          // Danh sách danh mục cha
           Container(
             width: 200,
             child: ListView.builder(
@@ -108,7 +115,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     categories[index]['name'] ?? 'N/A',
                     style: TextStyle(
                       fontSize: selectedIndex == index ? 18 : 14,
-                      color: selectedIndex == index ? Colors.blue : Colors.black,
+                      color: selectedIndex == index ? Colors.blue : Colors
+                          .black,
                     ),
                   ),
                   selected: selectedIndex == index,
@@ -123,7 +131,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ),
           ),
           VerticalDivider(thickness: 1, width: 1),
-          // Child categories grid
+          // Danh sách con
           Expanded(
             child: GridView.builder(
               padding: EdgeInsets.all(8.0),
@@ -132,12 +140,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 crossAxisSpacing: 8.0,
                 mainAxisSpacing: 8.0,
               ),
-              itemCount: groupedCategories[categories[selectedIndex]['id']]?.length ?? 0,
+              itemCount: groupedCategories[categories[selectedIndex]['id']]
+                  ?.length ?? 0,
               itemBuilder: (context, index) {
                 var childCategory = groupedCategories[categories[selectedIndex]['id']]![index];
                 return CategoryItem(
                   imageUrl: childCategory['icon_url'] ?? '',
                   label: childCategory['name'] ?? 'Unknown',
+                  categoryId: childCategory['id'].toString(),
                 );
               },
             ),
@@ -148,13 +158,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 }
 
-class CategoryItem extends StatelessWidget {
+  class CategoryItem extends StatelessWidget {
   final String imageUrl;
   final String label;
+  final String categoryId;
 
   const CategoryItem({
     required this.imageUrl,
     required this.label,
+    required this.categoryId,
   });
 
   @override
@@ -164,7 +176,7 @@ class CategoryItem extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => detailedList(), // Replace with your detailed list screen
+            builder: (context) => DetailedList(categoryId), // Replace with your detailed list screen
           ),
         );
       },
