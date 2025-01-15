@@ -10,9 +10,15 @@ export default class ProductRepository {
       .where(`product_id=${productId}`)
       .buildSqlServerQuery();
 
-    const subProductImages = await Database.mssql().query(
-      selectSubImagesProductSql
-    );
+    const subProductImages = await Database.mssql().query(selectSubImagesProductSql);
+
+    // Đảm bảo giá trị trả về luôn là một mảng
+    if (!Array.isArray(subProductImages)) {
+      console.warn('Expected an array but got an object:', subProductImages);
+      // Nếu trả về một đối tượng đơn lẻ, chuyển đổi thành một mảng một phần tử
+      return [subProductImages];
+    }
+
     return subProductImages.map((item) => item?.image_url);
   };
 
@@ -75,9 +81,9 @@ export default class ProductRepository {
 
         await Database.mssql().query(insertToProductSubImagesSql);
 
-        const subImagesProducts = await this.getSubImagesProduct(
-          productCreated.id
-        );
+        const subImagesProducts = Array.isArray(await this.getSubImagesProduct(productCreated.id))
+          ? await this.getSubImagesProduct(productCreated.id)
+          : [];
 
         return {
           ...productCreated,
@@ -96,7 +102,9 @@ export default class ProductRepository {
         id: id,
       });
 
-      const subImagesProducts = await this.getSubImagesProduct(product.id);
+     const subImagesProducts = Array.isArray(await this.getSubImagesProduct(product.id))
+       ? await this.getSubImagesProduct(product.id)
+       : [await this.getSubImagesProduct(product.id)];
 
       return {
         ...this.parseProductVariants(product),

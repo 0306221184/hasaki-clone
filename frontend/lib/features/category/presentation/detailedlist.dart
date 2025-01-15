@@ -6,7 +6,7 @@ import '../../../core/config/constants.dart';
 
 class DetailedList extends StatefulWidget {
   final String categoryId;
-  DetailedList(this.categoryId);
+  const DetailedList(this.categoryId, {Key? key}) : super(key: key);
 
   @override
   _DetailedListState createState() => _DetailedListState();
@@ -17,8 +17,8 @@ class _DetailedListState extends State<DetailedList> {
   List<dynamic> categories = [];
   TextEditingController searchController = TextEditingController();
   Timer? _debounce;
-  bool isLoadingProducts = true;  // Added this line
-  bool isLoadingCategories = true; // Added this line
+  bool isLoadingProducts = true;
+  bool isLoadingCategories = true;
 
   @override
   void initState() {
@@ -35,33 +35,25 @@ class _DetailedListState extends State<DetailedList> {
     searchController.dispose();
     super.dispose();
   }
-
-  Future<void> fetchProducts() async {
+//${widget.categoryId}?query=$query
+  Future<void> fetchProducts({String query = ''}) async {
     try {
-      final response = await http.get(Uri.parse('${backendUrl}/api/v1/product/category/${widget.categoryId}'));
+      final response = await http.get(Uri.parse('${backendUrl}/api/v1/product'));
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        if (json['data'] != null) {
-          setState(() {
-            products = List<dynamic>.from(json['data']);
-            isLoadingProducts = false; // Added this line
-            print("Products loaded: ${products.length}");
-          });
-        } else {
-          setState(() {
-            isLoadingProducts = false; // Added this line
-            print('No products found.');
-          });
-        }
+        setState(() {
+          products = List<dynamic>.from(json['data'] as List);
+          isLoadingProducts = false;
+        });
       } else {
         setState(() {
-          isLoadingProducts = false; // Added this line
+          isLoadingProducts = false;
           print('Error loading products: ${response.statusCode}');
         });
       }
     } catch (e) {
       setState(() {
-        isLoadingProducts = false; // Added this line
+        isLoadingProducts = false;
         print('Connection error: $e');
       });
     }
@@ -73,18 +65,18 @@ class _DetailedListState extends State<DetailedList> {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         setState(() {
-          categories = List<dynamic>.from(json['data']);
-          isLoadingCategories = false; // Added this line
+          categories = List<dynamic>.from(json['data'] as List);
+          isLoadingCategories = false;
         });
       } else {
         setState(() {
-          isLoadingCategories = false; // Added this line
+          isLoadingCategories = false;
           print('Error loading categories: ${response.statusCode}');
         });
       }
     } catch (e) {
       setState(() {
-        isLoadingCategories = false; // Added this line
+        isLoadingCategories = false;
         print('Connection error: $e');
       });
     }
@@ -94,16 +86,7 @@ class _DetailedListState extends State<DetailedList> {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
       final query = searchController.text.toLowerCase();
-      if (query.isNotEmpty) {
-        setState(() {
-          products = products.where((product) {
-            final name = product['name']?.toLowerCase() ?? '';
-            return name.startsWith(query);
-          }).toList();
-        });
-      } else {
-        fetchProducts(); // Fetch all products when the query is empty
-      }
+      fetchProducts(query: query); // Gọi fetchProducts với tham số query
     });
   }
 
@@ -133,30 +116,10 @@ class _DetailedListState extends State<DetailedList> {
           ),
         ],
       ),
-      body: isLoadingProducts || isLoadingCategories  // Added this line
-          ? Center(child: CircularProgressIndicator()) // Added this line
+      body: isLoadingProducts || isLoadingCategories
+          ? Center(child: CircularProgressIndicator())
           : ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: SizedBox(
-              height: 250,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: _buildCategoryCard(
-                      categories[index]['image_url'],
-                      categories[index]['name'],
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Wrap(
@@ -180,57 +143,10 @@ class _DetailedListState extends State<DetailedList> {
     );
   }
 
-  Widget _buildCategoryCard(String? imageUrl, String? title) {
-    return Container(
-      width: 170,
-      child: Card(
-        elevation: 4,
-        shadowColor: Colors.grey.withOpacity(1),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: InkWell(
-          onTap: () {},
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
-                  ),
-                  child: Image.network(
-                    imageUrl ?? 'https://via.placeholder.com/160x100',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Center(child: Icon(Icons.broken_image, size: 50));
-                    },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  title ?? 'No Title',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildProductCard(String imageUrl, String title, String description, String price, double rating, int reviewCount) {
     return Container(
       width: 220,
-      height: 300,
+      height: 350,
       child: Card(
         elevation: 10,
         shadowColor: Colors.grey.withOpacity(0.5),

@@ -10,17 +10,16 @@ class CategoryScreen extends StatefulWidget {
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
 }
+
 class _CategoryScreenState extends State<CategoryScreen> {
   int selectedIndex = 0;
   List<dynamic> products = [];
   List<dynamic> categories = [];
-
   Map<int, List<dynamic>> groupedCategories = {}; // Grouped by parent_id
 
   Future<void> fetchProducts() async {
     try {
-      final response = await http.get(
-          Uri.parse('${backendUrl}/api/v1/product'));
+      final response = await http.get(Uri.parse('$backendUrl/api/v1/product'));
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         setState(() {
@@ -36,30 +35,30 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   Future<void> fetchCategories() async {
     try {
-      final response = await http.get(
-          Uri.parse('${backendUrl}/api/v1/category'));
+      final response = await http.get(Uri.parse('${backendUrl}/api/v1/category'));
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        List<dynamic> rawCategories = json['data'] as List;
 
-        // Xử lý grouping
-        Map<int, List<dynamic>> grouped = {};
-        for (var category in rawCategories) {
-          int? parentId = category['parent_id'];
-          grouped.putIfAbsent(parentId ?? 0, () => []).add(category);
+        // Kiểm tra xem json['data'] có phải là List hay không
+        if (json['data'] is List) {
+          List<dynamic> rawCategories = json['data'] as List;
+          Map<int, List<dynamic>> grouped = {};
+          for (var category in rawCategories) {
+            int? parentId = category['parent_id'];
+            grouped.putIfAbsent(parentId ?? 0, () => []).add(category);
+          }
+          setState(() {
+            categories = grouped[0] ?? []; // Danh mục cha cấp cao nhất
+            groupedCategories = grouped;
+          });
+        } else {
+          print('Unexpected data structure: ${json['data']}');
         }
-
-        setState(() {
-          categories = grouped[0] ?? []; // Danh mục cha cấp cao nhất
-          groupedCategories = grouped;
-        });
       } else {
         print('Error loading categories: ${response.statusCode}');
-        // Hiển thị thông báo lỗi hoặc UI thay thế
       }
     } catch (e) {
       print('Connection error: $e');
-      // Hiển thị thông báo lỗi hoặc UI thay thế
     }
   }
 
@@ -104,7 +103,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
           ? Center(child: CircularProgressIndicator()) // Hiển thị khi đang tải
           : Row(
         children: [
-          // Danh sách danh mục cha
           Container(
             width: 200,
             child: ListView.builder(
@@ -115,8 +113,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     categories[index]['name'] ?? 'N/A',
                     style: TextStyle(
                       fontSize: selectedIndex == index ? 18 : 14,
-                      color: selectedIndex == index ? Colors.blue : Colors
-                          .black,
+                      color: selectedIndex == index ? Colors.blue : Colors.black,
                     ),
                   ),
                   selected: selectedIndex == index,
@@ -131,7 +128,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ),
           ),
           VerticalDivider(thickness: 1, width: 1),
-          // Danh sách con
           Expanded(
             child: GridView.builder(
               padding: EdgeInsets.all(8.0),
@@ -140,8 +136,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 crossAxisSpacing: 8.0,
                 mainAxisSpacing: 8.0,
               ),
-              itemCount: groupedCategories[categories[selectedIndex]['id']]
-                  ?.length ?? 0,
+              itemCount: groupedCategories[categories[selectedIndex]['id']]?.length ?? 0,
               itemBuilder: (context, index) {
                 var childCategory = groupedCategories[categories[selectedIndex]['id']]![index];
                 return CategoryItem(
@@ -158,7 +153,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 }
 
-  class CategoryItem extends StatelessWidget {
+class CategoryItem extends StatelessWidget {
   final String imageUrl;
   final String label;
   final String categoryId;
@@ -176,7 +171,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailedList(categoryId), // Replace with your detailed list screen
+            builder: (context) => DetailedList(categoryId),
           ),
         );
       },
