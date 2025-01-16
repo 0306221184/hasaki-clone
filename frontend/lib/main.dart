@@ -34,10 +34,77 @@ void main() {
 
 class MyApp extends StatefulWidget {
   @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  int _selectedIndex = 0;
+  bool isLoggedIn = true;
+
+  @override
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+  }
+
+  void checkLoginStatus() async {
+    final authProvider =
+        Provider.of<AuthProvider>(context, listen: false); // Lấy authProvider
+    await authProvider.loadUser();
+    if (authProvider.currentUser == null) {
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    }
+  }
+
+  static List<Widget> _widgetOptions = <Widget>[
+    const HomeScreen(),
+    const CategoryScreen(),
+    CartScreen(),
+    NotificationScreen(),
+    AccountScreen(),
+  ];
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // Ẩn thanh debug banner
-      home: HomeScreen(),
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: _widgetOptions.elementAt(_selectedIndex),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.category), label: 'Danh mục'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart), label: 'Giỏ hàng'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.notifications), label: 'Thông báo'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person), label: 'Tài khoản'),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.black54,
+          showUnselectedLabels: true,
+          showSelectedLabels: true,
+          selectedLabelStyle: TextStyle(color: Colors.blue),
+          unselectedLabelStyle: TextStyle(color: Colors.black54),
+          selectedIconTheme: IconThemeData(
+            color: Colors.blue,
+            size: 30, // Kích thước biểu tượng khi được chọn
+          ),
+          unselectedIconTheme: IconThemeData(
+            color: Colors.black54,
+            size: 24, // Kích thước biểu tượng khi không được chọn
+          ),
+        ),
+      ),
       routes: {
         '/account': (context) => AccountScreen(),
         '/category': (context) => CategoryScreen(),
@@ -59,74 +126,6 @@ class MyApp extends StatefulWidget {
         '/reset-password': (context) => ResetPasswordPage(),
         '/verification-code': (context) => VerificationCodePage(),
       },
-    );
-  }
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  int _selectedIndex = 0;
-  bool isLoggedIn = true;
-  @override
-  void initState() {
-    super.initState();
-    checkLoginStatus();
-  }
-
-  void checkLoginStatus() {
-    // TODO: Thêm logic kiểm tra đăng nhập thực tế ở đây
-    if (!isLoggedIn) {
-      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
-      Future.delayed(Duration.zero, () {
-        Navigator.pushReplacementNamed(context, '/login');
-      });
-    }
-  }
-
-  static List<Widget> _widgetOptions = <Widget>[
-    const HomeScreen(),
-    const CategoryScreen(),
-    CartScreen(),
-    NotificationScreen(),
-    AccountScreen(),
-  ];
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-  @override Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: _widgetOptions.elementAt(_selectedIndex),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
-            BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Danh mục'),
-            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Giỏ hàng'),
-            BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Thông báo'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Tài khoản'),
-          ],
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.black54,
-          showUnselectedLabels: true,
-          showSelectedLabels: true,
-          selectedLabelStyle: TextStyle(color: Colors.blue),
-          unselectedLabelStyle: TextStyle(color: Colors.black54),
-          selectedIconTheme: IconThemeData(
-            color: Colors.blue,
-            size: 30, // Kích thước biểu tượng khi được chọn
-          ),
-          unselectedIconTheme: IconThemeData(
-            color: Colors.black54,
-            size: 24, // Kích thước biểu tượng khi không được chọn
-          ),
-        ),
-      ),
     );
   }
 }

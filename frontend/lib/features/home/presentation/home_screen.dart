@@ -31,14 +31,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Kiểm tra trạng thái đăng nhập
-  void checkLoginStatus() {
+  void checkLoginStatus() async {
     final authProvider =
         Provider.of<AuthProvider>(context, listen: false); // Lấy authProvider
-    authProvider.loadUser().then((_) {
-      if (authProvider.currentUser == null) {
-        Navigator.pushReplacementNamed(context, '/login');
-      }
-    });
+    await authProvider.loadUser();
+    print(authProvider.currentUser);
+    if (authProvider.currentUser == null) {
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    }
   }
 
   Future<void> fetchProducts() async {

@@ -361,8 +361,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                   Provider.of<AuthProvider>(context,
                                           listen: false)
                                       .logout();
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, '/login', (route) => false);
+                                  Navigator.pushNamed(context, '/login');
                                 },
                                 icon: const Icon(Icons.logout),
                                 label: const Text('Đăng xuất'),

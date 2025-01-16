@@ -46,9 +46,7 @@ class AuthProvider with ChangeNotifier {
         }
         notifyListeners();
       }
-    } catch (e) {
-      throw Exception('Tải người dùng thất bại: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> fetchCurrentUser() async {
@@ -76,6 +74,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> login(String email, String password) async {
     _currentUser = await _authService.login(email: email, password: password);
+    print(_currentUser?.email);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', _currentUser!.accessToken as String);
     notifyListeners();
@@ -83,9 +82,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> logout() async {
     final isLogout = await _authService.logout();
-    if (isLogout) {
-      _currentUser = null;
-      notifyListeners();
-    }
+    _currentUser = null;
+    notifyListeners();
   }
 }

@@ -8,7 +8,7 @@ export default class PaymentService {
   }
   public createOrder = async (
     user_id: number,
-    currency: string = "usd",
+    currency: string = "vnd",
     note: string = "",
     promotion_code?: string,
     phone_number?: string,

@@ -17,8 +17,6 @@ class OrderDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDeliveryTimeSection(),
-            SizedBox(height: 16),
             _buildShippingInfoSection(),
             SizedBox(height: 16),
             _buildAddressSection(),
@@ -32,25 +30,6 @@ class OrderDetailsScreen extends StatelessWidget {
             _buildActionButtons(),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildDeliveryTimeSection() {
-    return Container(
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.blue[100],
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Thời gian nhận hàng dự kiến: 01 Th01 - 03 Th01',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ],
       ),
     );
   }
@@ -130,8 +109,6 @@ class OrderDetailsScreen extends StatelessWidget {
         Text('Mã đơn hàng: 251NH8015T',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         Text('Phương thức thanh toán: Thanh toán khi nhận hàng'),
-        Text('Thời gian đặt hàng: 01-01-2025 12:00'),
-        Text('Thời gian đơn vị vận chuyển lấy hàng: 02-01-2025 06:00'),
       ],
     );
   }

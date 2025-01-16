@@ -14,11 +14,15 @@ export default class PaymentController {
     next: NextFunction
   ) => {
     try {
-      const { user_id, currency, note } = req.body;
+      const { user_id, currency, note, promotion_code, phone_number, address } =
+        req.body;
       const result = await this.paymentServices.createOrder(
         user_id,
         currency,
-        note
+        note,
+        promotion_code,
+        phone_number,
+        address
       );
       if (result) {
         res.status(StatusCodes.OK).json({
