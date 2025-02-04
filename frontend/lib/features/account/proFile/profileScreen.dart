@@ -1,5 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // Thêm import này
+
+import '../../../core/abstracts/auth_service.dart';
+import '../../../core/config/constants.dart';
+import '../../../core/providers/auth_provider.dart';
 
 class AccountInfoScreen extends StatefulWidget {
   @override
@@ -7,20 +14,34 @@ class AccountInfoScreen extends StatefulWidget {
 }
 
 class _AccountInfoScreenState extends State<AccountInfoScreen> {
+  void checkLoginStatus() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false); // Lấy authProvider
+    await authProvider.loadUser();
+    if (authProvider.currentUser == null) {
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    }
+  }
+
   String _gender = 'Nam';
   DateTime _selectedDate = DateTime.now();
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _name = TextEditingController();
-  final TextEditingController _Sdt = TextEditingController();
+  final TextEditingController _email = TextEditingController();
   final TextEditingController _ngaySinh = TextEditingController();
 
   // Biến lưu trữ tên hiển thị
-  String _displayName = 'ThanhDanh';
+  late final UserType? _userProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _userProvider = Provider.of<AuthProvider>(context, listen: false).currentUser; // Lấy authProvider ở đây
+  }
 
   @override
   void dispose() {
     _name.dispose();
-    _Sdt.dispose();
+    _email.dispose();
     _ngaySinh.dispose();
     _dobController.dispose();
     super.dispose();
@@ -45,8 +66,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                   onDateTimeChanged: (DateTime newDate) {
                     setState(() {
                       _selectedDate = newDate;
-                      _ngaySinh.text =
-                      "${newDate.day}/${newDate.month}/${newDate.year}";
+                      _ngaySinh.text = "${newDate.day}/${newDate.month}/${newDate.year}";
                     });
                   },
                 ),
@@ -65,50 +85,75 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
     );
   }
 
-  bool _isValidPhoneNumber(String phone) {
-    final RegExp regex = RegExp(r'^(03|05|07|08|09)\d{8}$');
-    return regex.hasMatch(phone) && phone.length == 10;
+  bool _isValidEmail(String email) {
+    final RegExp regex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    return regex.hasMatch(email);
   }
 
-  void _updateAccountInfo() {
-    setState(() {
-      String message;
-
-      // Kiểm tra các điều kiện và gán thông báo
-      if (_name.text.isEmpty && _Sdt.text.isEmpty && _ngaySinh.text.isEmpty) {
-        message = 'Vui lòng nhập đầy đủ nội dung';
-      } else if(_name.text.isEmpty && _Sdt.text.isEmpty){
-        message = 'Vui lòng nhập Tên';
-      }
-      else if (_Sdt.text.isEmpty) {
-        message = 'Vui lòng nhập số điện thoại';
-      } else if (_ngaySinh.text.isEmpty) {
-        message = 'Vui lòng nhập ngày sinh';
-      } else if (!_isValidPhoneNumber(_Sdt.text)) {
-        message = 'Số điện thoại không đúng định dạng';
-      }
-      else {
-        message = 'Cập nhật thành công';
-        _displayName = _name.text;  // Cập nhật tên hiển thị
-      }
-
-      // Hiển thị thông báo
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Thông báo'),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context), // Đóng hộp thoại
-                child: Text('Đóng'),
-              ),
-            ],
-          );
-        },
+  Future<void> _updateAccountInfo() async {
+    String message;
+    if (_name.text.isEmpty && _email.text.isEmpty && _ngaySinh.text.isEmpty) {
+      message = 'Vui lòng nhập đầy đủ nội dung';
+    } else if (_name.text.isEmpty && _email.text.isEmpty) {
+      message = 'Vui lòng nhập Tên';
+    } else if (_email.text.isEmpty) {
+      message = 'Vui lòng nhập số điện thoại';
+    } else if (_ngaySinh.text.isEmpty) {
+      message = 'Vui lòng nhập ngày sinh';
+    } else if (!_isValidEmail(_email.text)) {
+      message = 'Email không đúng định dạng';
+    } else {
+      // Kiểm tra người dùng đã tồn tại chưa
+      final checkUserUrl = Uri.parse('${backendUrl}/api/v1/auth/users'); // URL để kiểm tra người dùng
+      final registerUrl = Uri.parse('${backendUrl}/api/v1/auth/register');
+      final checkUserResponse = await http.post(
+        checkUserUrl,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': _email.text}),
       );
-    });
+
+      if (checkUserResponse.statusCode == 200) {
+        // Người dùng đã tồn tại
+        message = 'Người dùng đã tồn tại.';
+      } else if (checkUserResponse.statusCode == 404) {
+        // Người dùng không tồn tại, tiến hành đăng ký
+        final response = await http.put(
+          registerUrl,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'name': _name.text,
+            'email': _email.text
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          message = 'Cập nhật thành công';
+          // Cập nhật thông tin hiển thị
+          _userProvider?.fullName = _name.text;
+        } else {
+          message = 'Cập nhật thất bại. Vui lòng thử lại.';
+        }
+      } else {
+        message = 'Kiểm tra người dùng thất bại.';
+      }
+    }
+
+    // Hiển thị thông báo
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Thông báo'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Đóng'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showLogoutDialog(BuildContext context) {
@@ -128,7 +173,8 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-              }, child: Text('OK'),
+              },
+              child: Text('OK'),
             ),
           ],
         );
@@ -155,21 +201,21 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
             ),
             SizedBox(height: 8),
             Text(
-              _displayName,  // Hiển thị tên mới
+              _userProvider?.fullName ?? '', // Hiển thị tên mới
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
             TextField(
-              controller: _name,
+              controller: _name..text = _userProvider?.fullName ?? '',
               decoration: InputDecoration(
                 hintText: 'Tên tài khoản',
               ),
             ),
             SizedBox(height: 16),
             TextField(
-              controller: _Sdt,
+              controller: _email..text = _userProvider?.email ?? '',
               decoration: InputDecoration(
-                hintText: 'Số điện thoại',
+                hintText: 'Email',
               ),
             ),
             SizedBox(height: 16),
@@ -233,7 +279,9 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
             ),
             SizedBox(height: 8),
             TextButton(
-              onPressed: () {_showLogoutDialog(context);},
+              onPressed: () {
+                _showLogoutDialog(context);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),

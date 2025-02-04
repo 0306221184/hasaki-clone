@@ -23,7 +23,6 @@ export default class AuthService {
         Bcrypt.getInstance().hashPassword(password),
         this.repository.checkExistUserByEmail(email),
       ]);
-
       if (isExistUser) {
         const newUser = await this.repository.createUser({
           email: email,
@@ -32,17 +31,16 @@ export default class AuthService {
           birthDate: birthDate,
           gender: gender,
         });
-
-        await this.cartRepository.createCart(newUser.id);
-
+        await this.cartRepository.createCart(newUser?.id);
         const payload: userJwtPayload = {
           id: newUser?.id,
           email: email,
           roleId: newUser?.role_id,
         };
-
         const { accessToken, refreshToken } =
           TokenUtilities.getInstance().getLoginToken(payload);
+              console.log(accessToken);
+              console.log(refreshToken);
         const loginUser = await this.repository.updateUserById(newUser?.id, {
           accessToken: accessToken,
           refreshToken: refreshToken,

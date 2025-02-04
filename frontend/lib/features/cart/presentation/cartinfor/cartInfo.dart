@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/features/account/order/orderScreen.dart';
 import 'package:frontend/features/cart/presentation/cart/cart_screen.dart';
 import 'package:frontend/features/cart/presentation/cartconfirm/cart_confirm.dart';
+import 'package:frontend/features/home/presentation/home_screen.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
+  final String imageUrl;
+  final String name;
+  final int price;
+  final double rating;
+  final String description;
+
+  const OrderDetailsScreen({
+    Key? key,
+    required this.imageUrl,
+    required this.name,
+    required this.price,
+    required this.rating,
+    required this.description,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +46,7 @@ class OrderDetailsScreen extends StatelessWidget {
             SizedBox(height: 16),
             _buildOrderCodeSection(),
             Spacer(),
-            _buildActionButtons(),
+            _buildActionButtons(context),
           ],
         ),
       ),
@@ -89,20 +106,17 @@ class OrderDetailsScreen extends StatelessWidget {
       children: [
         Row(
           children: [
-            Image.asset('assets/skinqua.png', width: 50, height: 50),
+            Image.network('${imageUrl}', width: 50, height: 50),
             SizedBox(width: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Skin Aqua Clear White',
+                  '$name',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 4),
-                Text('Sữa Chống Nắng Dưỡng Da'),
-                SizedBox(height: 4),
-                Text('Dung tích 55g', style: TextStyle(color: Colors.grey)),
-                Text('Số lượng 1', style: TextStyle(color: Colors.grey)),
+                Text('${price}đ'),
               ],
             ),
           ],
@@ -117,7 +131,7 @@ class OrderDetailsScreen extends StatelessWidget {
       children: [
         Text('Thành tiền:',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        Text('150.000đ',
+        Text('${price}đ',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
       ],
     );
@@ -136,23 +150,27 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ElevatedButton(
-          onPressed: () {},
-          child: Text('Đã nhận được hàng'),
-          style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white, foregroundColor: Colors.black),
+  Widget _buildActionButtons(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => OrderScreen()),
+          );
+        },
+        child: Text('Theo dõi đơn'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+          // Adjust horizontal and vertical padding
+          minimumSize: Size(150, 50),
+          // Set minimum size for the button
+          textStyle: TextStyle(fontSize: 16,
+              fontWeight: FontWeight.bold), // Customize font size and weight
         ),
-        ElevatedButton(
-          onPressed: () {},
-          child: Text('Theo dõi đơn'),
-          style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red, foregroundColor: Colors.white),
-        ),
-      ],
+      ),
     );
   }
 }

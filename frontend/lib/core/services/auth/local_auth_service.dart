@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:frontend/core/abstracts/auth_service.dart';
 import 'package:frontend/core/config/constants.dart';
 import 'package:http/http.dart' as http;

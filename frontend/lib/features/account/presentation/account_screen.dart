@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/providers/auth_provider.dart';
 import 'package:frontend/features/authentication/presentation/login_screen.dart';
+import 'package:frontend/features/cart/presentation/cart/cart_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/features/account/location/locationScreen.dart';
 import 'package:frontend/features/account/review/reviewscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/abstracts/auth_service.dart';
+import '../../../core/config/constants.dart';
+import '../../authentication/presentation/register_screen.dart';
 import '../changepassword/changePasswordScreen.dart';
 import '../favoriteproduct/FavoriteProduct.dart';
 import '../newproduct/newproductScreen.dart';
@@ -13,6 +17,8 @@ import '../order/orderScreen.dart';
 import '../proFile/profileScreen.dart';
 import '../trademark/trademarkscreen.dart';
 import '../voucher/voucherScreen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -24,11 +30,21 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   bool _isSwitched = true;
   String _address = 'Vui lòng nhập vị trí của bạn';
+  late final UserType? _userProvider;
 
   @override
   void initState() {
     super.initState();
     _loadSavedAddress();
+    _userProvider = Provider.of<AuthProvider>(context, listen: false).currentUser; // Lấy authProvider ở đây
+  }
+  void checkLoginStatus() async {
+    final authProvider =
+    Provider.of<AuthProvider>(context, listen: false); // Lấy authProvider
+    await authProvider.loadUser();
+    if (authProvider.currentUser == null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+    }
   }
 
   Future<void> _loadSavedAddress() async {
@@ -69,45 +85,49 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          decoration: InputDecoration(
-            hintText: 'Quản lý tài khoản',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.search),
-            filled: true,
-            fillColor: Colors.grey[300],
-          ),
-        ),
+        title: Text('Tài khoản', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              color: Colors.blue,
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Đăng nhập',
-                      style: TextStyle(color: Colors.white),
-                    ),
+          Container(
+          color: Colors.blue,
+          padding: const EdgeInsets.all(16.0),
+       child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            _userProvider?.fullName != null ?
+            Text( 'Chào mừng ${_userProvider?.fullName}',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ) : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () { Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginPage())
+                  );
+                    },
+                  child:
+                  const Text( 'Đăng nhập', style: TextStyle(color: Colors.white),
                   ),
-                  const SizedBox(width: 20),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Đăng ký',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                ), const SizedBox(width: 20),
+                TextButton( onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) =>
+                          RegisterPage()));
+                  },
+                  child: const Text( 'Đăng ký',
+                    style: TextStyle(color: Colors.white),
                   ),
-                ],
-              ),
-            ),
+                ),
+              ],
+             ),
+              ]
+           ),
+        ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -171,13 +191,14 @@ class _AccountScreenState extends State<AccountScreen> {
                       Column(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.new_releases,
-                                color: Colors.green),
+                            icon: const Icon(Icons.new_releases, color: Colors.green),
                             onPressed: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => OrderScreen()));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => OrderScreen(initialTabIndex: 1), // "Mới đặt"
+                                ),
+                              );
                             },
                           ),
                           const Text('Mới đặt'),
@@ -186,13 +207,14 @@ class _AccountScreenState extends State<AccountScreen> {
                       Column(
                         children: [
                           IconButton(
-                            icon:
-                                const Icon(Icons.pending, color: Colors.green),
+                            icon: const Icon(Icons.pending, color: Colors.green),
                             onPressed: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => OrderScreen()));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => OrderScreen(initialTabIndex: 2), // "Đang xử lý"
+                                ),
+                              );
                             },
                           ),
                           const Text('Đang xử lý'),
@@ -201,13 +223,14 @@ class _AccountScreenState extends State<AccountScreen> {
                       Column(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.check_circle,
-                                color: Colors.green),
+                            icon: const Icon(Icons.check_circle, color: Colors.green),
                             onPressed: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => OrderScreen()));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => OrderScreen(initialTabIndex: 3), // "Thành công"
+                                ),
+                              );
                             },
                           ),
                           const Text('Thành công'),
@@ -219,12 +242,14 @@ class _AccountScreenState extends State<AccountScreen> {
                             icon: const Icon(Icons.cancel, color: Colors.green),
                             onPressed: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => OrderScreen()));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => OrderScreen(initialTabIndex: 4), // "Đã hủy"
+                                ),
+                              );
                             },
                           ),
-                          const Text('Đã huỷ'),
+                          const Text('Đã hủy'),
                         ],
                       ),
                     ],
@@ -243,7 +268,12 @@ class _AccountScreenState extends State<AccountScreen> {
                           IconButton(
                             icon: const Icon(Icons.person),
                             onPressed: () {
-                              Navigator.pushNamed(context, '/info');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AccountInfoScreen(),
+                                ),
+                              );
                             },
                           ),
                           const Text('Cá nhân'),
@@ -254,7 +284,12 @@ class _AccountScreenState extends State<AccountScreen> {
                           IconButton(
                             icon: const Icon(Icons.favorite),
                             onPressed: () {
-                              Navigator.pushNamed(context, '/favorite');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FavoriteProductScreen(product: {},)
+                                ),
+                              );
                             },
                           ),
                           const Text('Yêu thích'),
@@ -265,7 +300,12 @@ class _AccountScreenState extends State<AccountScreen> {
                           IconButton(
                             icon: const Icon(Icons.star),
                             onPressed: () {
-                              Navigator.pushNamed(context, '/review');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ReviewScreen()
+                                ),
+                              );
                             },
                           ),
                           const Text('Đánh giá'),
@@ -276,7 +316,12 @@ class _AccountScreenState extends State<AccountScreen> {
                           IconButton(
                             icon: const Icon(Icons.branding_watermark),
                             onPressed: () {
-                              Navigator.pushNamed(context, '/trademark');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BrandScreen()
+                                ),
+                              );
                             },
                           ),
                           const Text('Thương hiệu'),
@@ -293,7 +338,12 @@ class _AccountScreenState extends State<AccountScreen> {
                           IconButton(
                             icon: const Icon(Icons.card_giftcard),
                             onPressed: () {
-                              Navigator.pushNamed(context, '/voucher');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => VoucherScreen()
+                                ),
+                              );
                             },
                           ),
                           const Text('Voucher'),
@@ -304,7 +354,12 @@ class _AccountScreenState extends State<AccountScreen> {
                           IconButton(
                             icon: const Icon(Icons.new_releases),
                             onPressed: () {
-                              Navigator.pushNamed(context, '/newproduct');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProductGridScreen()
+                                ),
+                              );
                             },
                           ),
                           const Text('Sản phẩm mới'),
@@ -315,7 +370,12 @@ class _AccountScreenState extends State<AccountScreen> {
                           IconButton(
                             icon: const Icon(Icons.visibility),
                             onPressed: () {
-                              Navigator.pushNamed(context, '/changePass');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ChangePasswordScreen()
+                                ),
+                              );
                             },
                           ),
                           const Text('Đổi mật khẩu'),
@@ -324,12 +384,12 @@ class _AccountScreenState extends State<AccountScreen> {
                       Column(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.local_offer),
+                            icon: const Icon(Icons.shopping_cart),
                             onPressed: () {
-                              // Hành động khi nhấn nút
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>CartScreen(product: {})));
                             },
                           ),
-                          const Text('Khuyến mãi'),
+                          const Text('Giỏ hàng'),
                         ],
                       ),
                     ],
@@ -359,11 +419,13 @@ class _AccountScreenState extends State<AccountScreen> {
                               padding: const EdgeInsets.all(16.0),
                               child: TextButton.icon(
                                 onPressed: () {
-                                  Provider.of<AuthProvider>(context,
-                                          listen: false)
-                                      .logout();
-                                  Navigator.push(
-                                      context, MaterialPageRoute(builder: (context)=>LoginPage()));
+                                  _showLogoutDialog(context);
+                                  Provider.of<AuthProvider>(context, listen: false).logout();
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => LoginPage()),
+                                        (route) => false, // This removes all the previous routes
+                                  );
                                 },
                                 icon: const Icon(Icons.logout),
                                 label: const Text('Đăng xuất'),
@@ -371,7 +433,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                   foregroundColor: Colors.black,
                                 ),
                               ),
-                            ),
+                              ),
                           ],
                         ),
                       ],
@@ -386,19 +448,3 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 }
-      //       label: 'Trang chủ',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.list),
-      //       label: 'Danh mục',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.notifications),
-      //       label: 'Thông báo',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.account_circle),
-      //       label: 'Tài khoản',
-      //     ),
-      //   ],
-      // ),

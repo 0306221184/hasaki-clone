@@ -69,10 +69,10 @@ class _BrandScreenState extends State<BrandScreen> {
 
   List<Widget> _buildBrandSections() {
     List<Widget> sections = [];
-    sections.add(_buildBrandSection('0-9', '16Plan', 'assets/Skinqua.png'));
-    sections.add(_buildBrandSection('0-9', '50 Megumi', 'assets/Skinqua.png'));
-    sections.add(_buildBrandSection('A', 'ABone', 'assets/Skinqua.png'));
-    sections.add(_buildBrandSection('B', 'BNNG', 'assets/Skinqua.png'));
+    sections.add(_buildBrandSection('0-9', '16Plan', 'assets/3ce.jpg'));
+    sections.add(_buildBrandSection('0-9', '50 Megumi', 'assets/3ce.jpg'));
+    sections.add(_buildBrandSection('A', 'ABone', 'assets/3ce.jpg'));
+    sections.add(_buildBrandSection('B', 'BNNG', 'assets/3ce.jpg'));
     return sections;
   }
 

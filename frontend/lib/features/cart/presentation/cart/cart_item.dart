@@ -1,96 +1,84 @@
 import 'package:flutter/material.dart';
 
 class CartItem extends StatelessWidget {
-  final int quantity;
-  final Function(int) onQuantityChanged;
-  final Function() onDelete; // Callback to notify parent for deletion
+  final String imageUrl;
+  final String name;
+  final int price;
+  final double rating;
+  final String description;
+  final VoidCallback onRemove;
 
-  CartItem({
-    required this.quantity,
-    required this.onQuantityChanged,
-    required this.onDelete, required product,
-  });
-
-  int pricePerItem = 150000; // Price per item
-
-  int get totalPrice => quantity * pricePerItem;
-
-  void incrementQuantity() {
-    onQuantityChanged(quantity + 1);
-  }
-
-  void decrementQuantity() {
-    if (quantity > 1) {
-      onQuantityChanged(quantity - 1);
-    }
-  }
+  const CartItem({
+    Key? key,
+    required this.imageUrl,
+    required this.name,
+    required this.price,
+    required this.rating,
+    required this.description,
+    required this.onRemove,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Product image (Replace with actual image URL or asset path)
-        Container(
-          width: 80,
-          height: 80,
-          child: Image.asset(
-            'assets/skinqua.png', // Replace with actual image URL
-            fit: BoxFit.cover,
-          ),
-        ),
-        SizedBox(width: 16),
-        // Product info
-        Expanded(
+    return Card(
+      elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Skin Aqua Clear White',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'Sữa Chống Nắng Sunday Skin Aqua Clear White PA+++',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'Dung tích 55g | Loại da: Da dầu/Da nhạy cảm',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-              SizedBox(height: 8),
-              // Quantity and price section
               Row(
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.remove),
-                    onPressed: decrementQuantity,
+                  Image.network(
+                    imageUrl,
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.cover,
                   ),
-                  Text(
-                    '$quantity',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: incrementQuantity,
-                  ),
-                  Spacer(),
-                  Text(
-                    '${totalPrice.toString()} đ',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  const SizedBox(width: 8), // Thêm khoảng cách giữa ảnh và văn bản
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              name,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.dangerous_outlined, color: Colors.grey),
+                              onPressed: onRemove,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '$price đ',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Đánh giá: $rating',
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ],
           ),
         ),
-        // Delete button with confirmation dialog
-        IconButton(
-          icon: Icon(Icons.close),
-          onPressed: onDelete, // Use the passed onDelete function directly
-        ),
-      ],
     );
   }
 }

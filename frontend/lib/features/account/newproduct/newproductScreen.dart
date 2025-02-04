@@ -1,20 +1,48 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../../../core/config/constants.dart';
+import '../../Category_Detal/category_detail_screen.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class ProductGridScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ProductGridScreen(),
-    );
-  }
+  _ProductGridScreenState createState() => _ProductGridScreenState();
 }
 
-class ProductGridScreen extends StatelessWidget {
+class _ProductGridScreenState extends State<ProductGridScreen> {
+  List<dynamic> products = [];
+  bool isLoading = true;
+  String errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+  }
+
+  Future<void> fetchProducts() async {
+    try {
+      final response = await http.get(Uri.parse('${backendUrl}/api/v1/product'));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        setState(() {
+          products = json['data'] as List;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+          errorMessage = 'Failed to load products: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        errorMessage = 'Connection error: $e';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +70,11 @@ class ProductGridScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: Padding(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : errorMessage.isNotEmpty
+          ? Center(child: Text(errorMessage))
+          : Padding(
         padding: EdgeInsets.all(8.0),
         child: GridView.builder(
           itemCount: products.length,
@@ -53,7 +85,26 @@ class ProductGridScreen extends StatelessWidget {
             childAspectRatio: 0.7,
           ),
           itemBuilder: (context, index) {
-            return ProductCard(product: products[index]);
+            final product = products[index] as Map<String, dynamic>;
+            return GestureDetector(
+              onTap: () {
+                // Navigate to the detail page with product data
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProductDetailPage(
+                      imageUrl: product['image_url'] as String,
+                      name: product['name'] as String,
+                      price: product['price'] as int,
+                      rating: product['rating'] as double,
+                      description: product['description'] as String,
+                      productId: product['id'].toString(),
+                    ),
+                  ),
+                );
+              },
+              child: ProductCard(product: product),
+            );
           },
         ),
       ),
@@ -61,46 +112,8 @@ class ProductGridScreen extends StatelessWidget {
   }
 }
 
-class Product {
-  final String imageUrl;
-  final String name;
-  final String price;
-  final String description;
-  final double rating;
-  final int reviews;
-
-  Product({
-    required this.imageUrl,
-    required this.name,
-    required this.price,
-    required this.description,
-    required this.rating,
-    required this.reviews,
-  });
-}
-
-final List<Product> products = [
-  Product(
-    imageUrl: "assets/Skinqua.png",
-    name: "Obagi",
-    price: "1.480.000đ",
-    description: "Kem Dưỡng Obagi Retinal 1.0% Trẻ Hóa Da, Ngừa Mụn",
-    rating: 4.0,
-    reviews: 12,
-  ),
-  Product(
-    imageUrl: "assets/Skinqua.png",
-    name: "Skin Aqua UV Body",
-    price: "120.000đ",
-    description: "Sữa Chống Nắng Sunday Skin Aqua UV Body PA+++",
-    rating: 4.7,
-    reviews: 12,
-  ),
-  // Thêm các sản phẩm khác nếu cần
-];
-
 class ProductCard extends StatelessWidget {
-  final Product product;
+  final dynamic product;
 
   ProductCard({required this.product});
 
@@ -114,27 +127,30 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(
-              product.imageUrl,
-              height: 50,
-              width: double.infinity,
-              fit: BoxFit.cover,
+            AspectRatio(
+              aspectRatio: 1.5,
+              child: Image.network(
+                product['image_url'] ?? '',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    Icon(Icons.broken_image),
+              ),
             ),
             SizedBox(height: 8),
             Text(
-              product.name,
+              product['name'] ?? '',
               style: TextStyle(fontWeight: FontWeight.bold),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
             SizedBox(height: 4),
             Text(
-              product.price,
+              '${product['price']?.toString() ?? '0'} đ',
               style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 4),
             Text(
-              product.description,
+              product['description'] ?? '',
               style: TextStyle(fontSize: 12, color: Colors.black54),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -145,7 +161,7 @@ class ProductCard extends StatelessWidget {
                 Icon(Icons.star, color: Colors.orange, size: 16),
                 SizedBox(width: 4),
                 Text(
-                  '${product.rating} (${product.reviews})',
+                  '${product['rating'] ?? 0}',
                   style: TextStyle(fontSize: 12),
                 ),
               ],

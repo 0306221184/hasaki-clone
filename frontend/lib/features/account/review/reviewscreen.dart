@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../core/providers/auth_provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,6 +26,14 @@ class _ReviewScreenState extends State<ReviewScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
+  void checkLoginStatus() async {
+    final authProvider =
+    Provider.of<AuthProvider>(context, listen: false); // Lấy authProvider
+    await authProvider.loadUser();
+    if (authProvider.currentUser == null) {
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    }
+  }
   @override
   void initState() {
     super.initState();

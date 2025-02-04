@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/cart/presentation/cartaddress/cart_address.dart';
-import 'package:frontend/features/cart/presentation/cartdiscount/cart_discount.dart';
-import 'package:frontend/features/cart/presentation/cartinfor/cartInfo.dart';
-import 'package:frontend/features/cart/presentation/cartpay/cart_pay.dart';
+import 'package:provider/provider.dart';
+import '../../../account/order/OrderModel.dart';
+import '../cartdiscount/cart_discount.dart';
+import '../cartinfor/cartInfo.dart';
+import '../cartpay/cart_pay.dart';
 
 class OrderConfirmationScreen extends StatefulWidget {
+  final String imageUrl;
+  final String name;
+  final int price;
+  final double rating;
+  final String description;
+
+  const OrderConfirmationScreen({
+    Key? key,
+    required this.imageUrl,
+    required this.name,
+    required this.price,
+    required this.rating,
+    required this.description,
+  }) : super(key: key);
+
   @override
   _OrderConfirmationScreenState createState() =>
       _OrderConfirmationScreenState();
@@ -42,7 +58,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                       children: [
                         Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.blue[100],
                             borderRadius: BorderRadius.circular(4),
@@ -135,37 +151,31 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                 ),
                 child: Row(
                   children: [
-                    Image.asset(
-                      'assets/skinqua.png',
-                      width: 50,
-                      height: 50,
+                    Image.network(
+                      widget.imageUrl, // Replace with the URL of your image
+                      height: 100, // Set a height for your image
+                      width: 100, // Set a width for your image
+                      fit: BoxFit.cover,
                     ),
-                    SizedBox(width: 16),
+                    SizedBox(width: 8), // Add some space between the image and text
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Skin Aqua Clear White',
+                            widget.name,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 4),
-                          Text('Sữa Chống Nắng Dưỡng Da'),
-                          SizedBox(height: 4),
-                          Text('Dung tích 55g',
-                              style: TextStyle(color: Colors.grey)),
-                          Text('Số lượng 1',
-                              style: TextStyle(color: Colors.grey)),
+                          Text('${widget.description}'),
                         ],
                       ),
                     ),
-                    Text('150.000 đ',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${widget.price}đ', style: TextStyle(fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
               SizedBox(height: 16),
-
               // Ghi chú
               TextField(
                 decoration: InputDecoration(
@@ -185,7 +195,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     children: [
                       Text('Tạm tính (1)',
                           style: TextStyle(color: Colors.grey)),
-                      Text('150.000 đ', style: TextStyle(color: Colors.grey)),
+                      Text('${widget.price}đ ', style: TextStyle(color: Colors.grey)),
                     ],
                   ),
                   SizedBox(height: 4),
@@ -202,7 +212,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     children: [
                       Text('Tổng thanh toán (đã VAT)',
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('150.000 đ',
+                      Text('${widget.price}đ',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.red)),
                     ],
@@ -212,10 +222,27 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
+                        // Add order to OrderProvider
+                        Provider.of<OrderProvider>(context, listen: false).addToOrder({
+                          'imageUrl': widget.imageUrl,
+                          'name': widget.name,
+                          'price': widget.price,
+                          'rating': widget.rating,
+                          'description': widget.description,
+                        });
+                        // Navigate to OrderDetailsScreen
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OrderDetailsScreen()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OrderDetailsScreen(
+                              imageUrl: widget.imageUrl,
+                              name: widget.name,
+                              price: widget.price,
+                              rating: widget.rating,
+                              description: widget.description,
+                            ),
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,

@@ -149,7 +149,6 @@ export default class AuthRepository {
         provider_id: providerId,
         is_email_verified: isEmailVerified,
         gender: gender,
-        birth_date: birthDate,
       });
       return createdUser;
     } catch (error) {

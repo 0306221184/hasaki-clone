@@ -259,7 +259,7 @@ class _RegisterPageState extends State<RegisterPage> {
             _gender!);
         if (Provider.of<AuthProvider>(context, listen: false).currentUser !=
             null) {
-          Navigator.pushReplacementNamed(context, '/');
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
         }
       }
     } catch (e) {
@@ -507,10 +507,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: TextButton(
                   onPressed: () {
                     // Navigator.pushReplacementNamed(context, '/');
-                    Navigator.pushNamedAndRemoveUntil(
+                    Navigator.push(
                       context,
-                      "/login",
-                      (route) => false,
+                      MaterialPageRoute(builder: (context)=>LoginPage()),
                     );
                   },
                   child: const Text(

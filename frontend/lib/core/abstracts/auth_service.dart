@@ -16,13 +16,13 @@ abstract class IAuthService {
 class UserType {
   final int id;
   final String? username;
-  final String email;
+  late final String email;
   final String? password;
   final String? accessToken;
   final String? refreshToken;
   final int roleId;
   final String? avatar;
-  final String? fullName;
+  late final String? fullName;
   final String? phoneNumber;
   final bool isDisabled;
   final bool isDeleted;

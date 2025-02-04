@@ -88,16 +88,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Color(0xFF3CABF3),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.location_on, color: Colors.white),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.all_inbox_rounded, color: Colors.white),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: categories.isEmpty
           ? Center(child: CircularProgressIndicator()) // Hiển thị khi đang tải
@@ -171,7 +161,7 @@ class CategoryItem extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailedList(categoryId),
+            builder: (context) => DetailedList(),
           ),
         );
       },

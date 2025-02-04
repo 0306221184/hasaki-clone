@@ -1,100 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(MyApp());
+import '../../Category_Detal/category_detail_screen.dart';
+import 'FavariteMdel.dart';
+
+
+class FavoriteProductScreen extends StatefulWidget {
+  final Map<String, dynamic> product;
+
+  const FavoriteProductScreen({Key? key, required this.product}) : super(key: key);
+
+  @override
+  _FavoriteProductScreen createState() => _FavoriteProductScreen();
 }
 
-class MyApp extends StatelessWidget {
+class _FavoriteProductScreen extends State<FavoriteProductScreen> {
+
+  Map<String, dynamic>? selectedProduct;
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: FavoriteProductScreen(),
-    );
+  void initState() {
+    super.initState();
   }
-}
 
-class FavoriteProductScreen extends StatelessWidget {
+
+  int calculateTotalPrice() {
+    if (selectedProduct != null) {
+      return selectedProduct!['price'];
+    }
+    return 0;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // final cart = Provider.of<FavoritesProvider>(context).favoriteProductIds;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Sản phẩm yêu thích"),
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-          centerTitle: true,
+        title: const Text('Yêu thích'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                // Product image with smaller size
-                Image.asset(
-                  'assets/Skinqua.png', // Replace with your image asset
-                  width: 50, // Adjusted width
-                  height: 50, // Adjusted height
-                ),
-                SizedBox(width: 16),
-                // Product details
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Skin Aqua Clear White",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Sữa Chống Nắng Sunday Skin Aqua Clear White PA++",
-                        style: TextStyle(fontSize: 14, color: Colors.black54),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Dung tích: 55g | Loại da: Da dầu/Da nhạy cảm",
-                        style: TextStyle(fontSize: 12, color: Colors.black54),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "150.000 ₫",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle button action
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red, // Button color
-                          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                        ),
-                        child: Text(
-                          "Mua Online",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-
-                        ),
-                      ),
-                      SizedBox(height: 16, width: 20,)
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Spacer(),
-            // Buy Online button
-          ],
+      bottomNavigationBar: BottomAppBar(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Tổng tiền: ${calculateTotalPrice()} VND',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                },
+                child: Text('Tiến Hành Đặt Hàng'),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+

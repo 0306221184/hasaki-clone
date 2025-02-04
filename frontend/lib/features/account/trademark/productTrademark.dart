@@ -40,6 +40,7 @@ class DetailScreen extends StatelessWidget {
               alignment: WrapAlignment.center, // Canh giữa các thẻ
               children: [
                 _buildProductCard(
+                  'assets/3ce.jpg',
                   'Obagi',
                   'Kem Dưỡng Obagi Retinal 1.0% Trẻ Hóa Da, Ngừa Mụn',
                   '1,480,000đ',
@@ -47,6 +48,7 @@ class DetailScreen extends StatelessWidget {
                   12,
                 ),
                 _buildProductCard(
+                  'assets/3ce.jpg',
                   'Skin Aqua UV Body',
                   'Sữa Chống Nắng Sunday Skin Aqua UV Body PA+++',
                   '120,000đ',
@@ -54,6 +56,7 @@ class DetailScreen extends StatelessWidget {
                   115,
                 ),
                 _buildProductCard(
+                  'assets/3ce.jpg',
                   'Skin Aqua UV Body',
                   'Sữa Chống Nắng Sunday Skin Aqua UV Body PA+++',
                   '120,000đ',
@@ -61,6 +64,7 @@ class DetailScreen extends StatelessWidget {
                   115,
                 ),
                 _buildProductCard(
+                  'assets/3ce.jpg',
                   'Obagi',
                   'Kem Dưỡng Obagi Retinal 1.0% Trẻ Hóa Da, Ngừa Mụn',
                   '1,480,000đ',
@@ -75,7 +79,7 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProductCard(String title, String description, String price, double rating, int reviewCount) {
+  Widget _buildProductCard(String image, String title, String description, String price, double rating, int reviewCount) {
     return Container(
       width: 200, // Adjusted card width
       child: Card(
@@ -98,8 +102,10 @@ class DetailScreen extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.asset(
-                    'assets/Skinqua.png', // Replace with actual image path
+                    image, // Replace with actual image path
                     fit: BoxFit.cover, // Scale image to cover the entire area
+                    errorBuilder: (context, error, stackTrace) =>
+                        Icon(Icons.image_not_supported, size: 80, color: Colors.grey),
                   ),
                 ),
               ),
@@ -139,6 +145,4 @@ class DetailScreen extends StatelessWidget {
       ),
     );
   }
-
-
 }

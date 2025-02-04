@@ -15,18 +15,26 @@ import 'package:frontend/features/home/presentation/home_screen.dart';
 import 'package:frontend/features/notification/presentation/notification_screen.dart';
 import 'package:frontend/features/cart/presentation/cart/cart_screen.dart';
 import 'package:provider/provider.dart';
+import 'features/account/order/OrderModel.dart';
+import 'features/cart/data/models/CartPage.dart';
 import 'features/account/changepassword/changePasswordScreen.dart';
+import 'features/account/favoriteproduct/FavariteMdel.dart';
 import 'features/account/location/locationScreen.dart';
 import 'features/account/presentation/account_screen.dart';
 import 'features/account/proFile/profileScreen.dart';
 import 'features/account/trademark/trademarkscreen.dart';
+import 'features/cart/data/models/cart_model.dart';
+import 'features/cart/presentation/cart/cart_item.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider( create: (context) => CartProvider()),
+        ChangeNotifierProvider(create: (context) => OrderProvider()),
       ],
+
       child: MyApp(),
     ),
   );
@@ -38,27 +46,6 @@ class MyApp extends StatefulWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // Ẩn thanh debug banner
       home: HomeScreen(),
-      routes: {
-        '/account': (context) => AccountScreen(),
-        '/category': (context) => CategoryScreen(),
-        '/cart': (context) => CartScreen(),
-        '/favorite': (context) => FavoriteProductScreen(),
-        '/review': (context) => ReviewScreen(),
-        '/profile': (context) => AccountInfoScreen(),
-        '/order': (context) => OrderScreen(),
-        '/location': (context) => LocationSelectionScreen(),
-        '/info': (context) => AccountInfoScreen(),
-        '/changePass': (context) => ChangePasswordScreen(),
-        '/trademark': (context) => BrandScreen(),
-        '/voucher': (context) => VoucherScreen(),
-        '/newproduct': (context) => ProductGridScreen(),
-        '/notification': (context) => NotificationScreen(),
-        '/login': (context) => LoginPage(),
-        '/register': (context) => RegisterPage(),
-        '/forgot-password': (context) => ForgotPasswordPage(),
-        '/reset-password': (context) => ResetPasswordPage(),
-        '/verification-code': (context) => VerificationCodePage(),
-      },
     );
   }
   @override
@@ -67,27 +54,25 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
-  bool isLoggedIn = true;
+  bool isLoggedIn = false;
   @override
   void initState() {
     super.initState();
     checkLoginStatus();
   }
 
-  void checkLoginStatus() {
-    // TODO: Thêm logic kiểm tra đăng nhập thực tế ở đây
-    if (!isLoggedIn) {
-      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
-      Future.delayed(Duration.zero, () {
-        Navigator.pushReplacementNamed(context, '/login');
-      });
+  void checkLoginStatus() async {
+    final authProvider =
+    Provider.of<AuthProvider>(context, listen: false); // Lấy authProvider
+    await authProvider.loadUser();
+    if (authProvider.currentUser == null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
     }
   }
 
   static List<Widget> _widgetOptions = <Widget>[
     const HomeScreen(),
     const CategoryScreen(),
-    CartScreen(),
     NotificationScreen(),
     AccountScreen(),
   ];
@@ -105,7 +90,7 @@ class _MyAppState extends State<MyApp> {
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
             BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Danh mục'),
-            BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Giỏ hàng'),
+            // BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Giỏ hàng'),
             BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Thông báo'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Tài khoản'),
           ],
@@ -127,6 +112,11 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ),
+    routes:
+  {
+    '/login': (context) => LoginPage(),
+  }
+
     );
   }
 }

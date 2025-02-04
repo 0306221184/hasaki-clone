@@ -177,13 +177,11 @@ class YourNotificationsTab extends StatelessWidget {
           title: 'Đơn hàng 24052052196 đã đặt thành công',
           content: 'Dolia đã nhận được thông tin đơn hàng của bạn.',
           time: '01-12-2023 08:05:00',
-          imageUrl: 'https://via.placeholder.com/100',
         ),
         buildNotificationItem(
           title: 'Đơn hàng 24013158251 đã đặt thành công',
           content: 'Dolia đã nhận được thông tin đơn hàng của bạn.',
           time: '30-11-2023 20:30:00',
-          imageUrl: 'https://via.placeholder.com/100',
         ),
       ],
     );
@@ -193,7 +191,6 @@ class YourNotificationsTab extends StatelessWidget {
     required String title,
     required String content,
     required String time,
-    required String imageUrl,
   }) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -201,8 +198,6 @@ class YourNotificationsTab extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: Row(
           children: [
-            Image.network(imageUrl, width: 50, height: 50, fit: BoxFit.cover),
-            SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

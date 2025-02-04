@@ -242,16 +242,16 @@ class _AddressScreenState extends State<AddressScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => OrderConfirmationScreen()),
-                      );
-                    } else {
-                      _showCustomDialog(
-                          'Vui lòng điền đầy đủ thông tin và kiểm tra lại');
-                    }
+                    // if (_formKey.currentState!.validate()) {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => OrderConfirmationScreen()),
+                    //   );
+                    // } else {
+                    //   _showCustomDialog(
+                    //       'Vui lòng điền đầy đủ thông tin và kiểm tra lại');
+                    // }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,

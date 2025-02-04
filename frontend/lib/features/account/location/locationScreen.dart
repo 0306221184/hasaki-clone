@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../core/providers/auth_provider.dart';
 
 
 class LocationSelectionScreen extends StatefulWidget {
@@ -8,6 +11,15 @@ class LocationSelectionScreen extends StatefulWidget {
 }
 
 class _LocationSelectionScreen extends State<LocationSelectionScreen> {
+
+  void checkLoginStatus() async {
+    final authProvider =
+    Provider.of<AuthProvider>(context, listen: false); // Lấy authProvider
+    await authProvider.loadUser();
+    if (authProvider.currentUser == null) {
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    }
+  }
   // Dữ liệu mẫu
   final Map<String, List<String>> locationData =
   {

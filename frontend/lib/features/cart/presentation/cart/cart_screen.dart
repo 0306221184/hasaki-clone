@@ -1,186 +1,163 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/features/cart/data/models/cart_model.dart';
-import 'package:frontend/features/cart/presentation/cartaddress/cart_address.dart';
-import 'package:frontend/features/cart/presentation/cart/cart_item.dart';
-import 'package:frontend/features/home/presentation/home_screen.dart';
+import 'package:frontend/features/cart/presentation/cartconfirm/cart_confirm.dart';
+import 'package:provider/provider.dart';
+import '../../data/models/CartPage.dart';
+import '../../../Category_Detal/category_detail_screen.dart';
 
 class CartScreen extends StatefulWidget {
+  final Map<String, dynamic> product;
+
+  const CartScreen({Key? key, required this.product}) : super(key: key);
+
   @override
   _CartScreenState createState() => _CartScreenState();
 }
 
 class _CartScreenState extends State<CartScreen> {
-  List<int> quantities = [1]; // Product quantities
-  List<int> pricePerItem = [150000]; // List of prices per item
-  List<String> items = ['Skin Aqua Clear White']; // List of item names
+  List<Map<String, dynamic>> cartItems = [];
 
-  // Calculate the total price dynamically based on quantities and prices
-  int get totalPrice {
+  @override
+  void initState() {
+    super.initState();
+    // Add the product to the cart when CartScreen is first opened
+    cartItems.add(widget.product);
+  }
+
+  void removeItem(int index) {
+    setState(() {
+      cartItems.removeAt(index); // Remove item from the cart
+    });
+  }
+
+  int calculateTotalPrice() {
     int total = 0;
-    for (int i = 0; i < quantities.length; i++) {
-      total += quantities[i] * pricePerItem[i];
+    for (var item in cartItems) {
+      total += (item['price'] as int?) ?? 0; // Handle null values by defaulting to 0
     }
     return total;
   }
 
-  // Update the quantity of a specific item
-  void updateQuantity(int index, int newQuantity) {
-    setState(() {
-      quantities[index] = newQuantity;
-    });
-  }
-
-  // Remove the item from the cart
-  void removeItem(int index) {
-    setState(() {
-      quantities.removeAt(index); // Remove the item at the specified index
-      items.removeAt(index); // Remove the item from the list
-      pricePerItem.removeAt(index); // Remove the price at the specified index
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context).cart;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Giỏ hàng'),
-        foregroundColor: Colors.white,
+        title: const Text('Giỏ Hàng'),
         backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: quantities.isEmpty
-                ? Center(
-              child: Text(
-                'Giỏ hàng không có sản phẩm',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-            )
-                : ListView.builder(
-              padding: EdgeInsets.all(16.0),
-              itemCount: quantities.length,
-              itemBuilder: (context, index) {
-                return CartItem(
-                  quantity: quantities[index],
-                  onQuantityChanged: (newQuantity) {
-                    updateQuantity(index, newQuantity);
-                  },
-                  onDelete: () {
-                    _showDeleteDialog(
-                        index); // Show confirmation dialog before deletion
-                  }, product: null,
-                );
-              },
-            ),
+      body: cart.isEmpty
+          ? const Center(
+        child: Text(
+          'Giỏ hàng trống',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
           ),
-          Divider(height: 1, color: Colors.grey),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+        ),
+      )
+          : ListView.builder(
+        itemCount: cart.length,
+        itemBuilder: (context, index) {
+          final product = cart[index];
+          final price = (product['price'] as int?) ?? 0;
+          final imageUrl = product['imageUrl'] ?? '';
+
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            child: Row(
               children: [
-                if (quantities.isNotEmpty)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Image.network(
+                  imageUrl,
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                  const Icon(Icons.image_not_supported), // Handle image load errors
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Tổng thanh toán',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        product['name'] ?? 'Unknown Product',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            '${totalPrice.toString()} đ',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                            ),
-                          ),
-                          Text(
-                            'Đã bao gồm VAT',
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                        ],
-                      ),
+                      const SizedBox(height: 4),
+                      Text('$price VND'),
                     ],
                   ),
-                SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: quantities.isEmpty
-                      ? null // Disable button when cart is empty
-                      : () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddressScreen()),
-                    );
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    Provider.of<CartProvider>(context, listen: false)
+                        .removeFromCart(product);
+                    // Rebuild the widget to update the cart state
+                    setState(() {});
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: quantities.isEmpty
-                        ? Colors.grey // Set a disabled color for the button
-                        : Colors.orange,
-                    padding: EdgeInsets.symmetric(vertical: 16.0),
-                  ),
-                  child: Text(
-                    quantities.isEmpty
-                        ? 'Giỏ hàng trống'
-                        : 'TIẾN HÀNH ĐẶT HÀNG',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
                 ),
               ],
             ),
-          ),
-        ],
+          );
+        },
       ),
-    );
-  }
-
-  void _showDeleteDialog(int index) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Xóa sản phẩm'),
-          content:
-          Text('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(); // Đóng hộp thoại mà không xóa sản phẩm
-              },
-              child: Text('Hủy'),
-            ),
-            TextButton(
-              onPressed: () {
-                removeItem(index); // Gọi hàm xóa sản phẩm
-                Navigator.of(context).pop(); // Đóng hộp thoại sau khi xóa
-                if (quantities.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Giỏ hàng đã trống!'),
-                    ),
-                  );
-                }
-              },
-              child: Text(
-                'Xóa',
-                style: TextStyle(color: Colors.red),
+      bottomNavigationBar: cart.isEmpty
+          ? null
+          : BottomAppBar(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Tổng tiền: ${cart.fold<int>(0, (total, item) => total + ((item['price'] as int?) ?? 0))} VND',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
-        );
-      },
+              ElevatedButton(
+                 style:  ElevatedButton.styleFrom(
+                   backgroundColor: Colors.red
+                 ),
+                onPressed: () {
+                    if (cart.isNotEmpty) {
+                      // Chuyển hướng đến màn hình xác nhận đặt hàng
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              OrderConfirmationScreen(
+                                imageUrl: cart[0]['imageUrl'] ?? '',
+                                name: cart[0]['name'] ?? 'Unknown Product',
+                                price: cart.fold<int>(
+                                    0, (total, item) => total +
+                                    ((item['price'] as int?) ?? 0)),
+                                rating: cart[0]['rating'] ?? 0.0,
+                                description: cart[0]['description'] ?? '',
+                              ),
+                        ),
+                      );
+                    }
+                },
+                child: const Text( 'Tiến Hành Đặt Hàng',
+                style: TextStyle( color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

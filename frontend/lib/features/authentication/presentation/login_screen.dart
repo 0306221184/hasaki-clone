@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
           Provider.of<AuthProvider>(context, listen: false); // Lấy authProvider
       authProvider.loadUser().then((_) {
         if (authProvider.currentUser != null) {
-          Navigator.pushReplacementNamed(context, '/');
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
         }
       });
     }
@@ -53,7 +53,6 @@ class _LoginPageState extends State<LoginPage> {
     if (value.length < 5) {
       return 'Email phải có ít nhất 5 ký tự';
     }
-
     return null;
   }
 
@@ -281,9 +280,9 @@ class _LoginPageState extends State<LoginPage> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(
+                          Navigator.push(
                             context,
-                            '/forgot-password',
+                            MaterialPageRoute(builder: (context)=>ForgotPasswordPage())
                           );
                         },
                         child: const Text(

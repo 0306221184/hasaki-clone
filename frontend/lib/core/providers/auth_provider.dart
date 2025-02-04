@@ -13,6 +13,7 @@ class AuthProvider with ChangeNotifier {
   UserType? _currentUser;
 
   UserType? get currentUser => _currentUser;
+
   Future<void> loadUser() async {
     try {
       final prefs = await SharedPreferences.getInstance();

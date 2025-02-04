@@ -1,7 +1,7 @@
 import { Database } from "../lib/database/database";
 
 export default class CartRepository {
-  async createCart(userId: number): Promise<any> {
+  async createCart(userId?: number): Promise<any> {
     try {
       const newCart = await Database.mssql().query(
         `
@@ -18,6 +18,7 @@ export default class CartRepository {
       throw error;
     }
   }
+
   public createCartItem = async ({
     cart_id,
     product_id,
@@ -29,14 +30,13 @@ export default class CartRepository {
       await Database.mssql().beginTransaction();
 
       // Sử dụng MERGE để thực hiện cả INSERT và UPDATE trong một câu lệnh
-
       const result = await Database.mssql().query(
         `
             MERGE INTO cart_items AS target
             USING (SELECT @cart_id AS cart_id, @product_id AS product_id) AS source
             ON (target.cart_id = source.cart_id AND target.product_id = source.product_id)
             WHEN MATCHED THEN
-              UPDATE SET quantity = target.quantity + @quantity
+              UPDATE SET quantity = @quantity
             WHEN NOT MATCHED THEN
               INSERT (cart_id, product_id, quantity, price)
               VALUES (@cart_id, @product_id, @quantity, @price);
