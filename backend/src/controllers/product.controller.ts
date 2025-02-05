@@ -24,8 +24,8 @@ export default class ProductController {
         rating,
         image_url,
         tags,
-        color_variants,
-        size_variants,
+        variants,
+        sub_images_url,
       } = req.body;
 
       const productCreated = await this.productService.createProduct({
@@ -38,12 +38,8 @@ export default class ProductController {
         rating,
         image_url,
         tags,
-        color_variants: color_variants
-          ? JSON.stringify(color_variants)
-          : color_variants,
-        size_variants: size_variants
-          ? JSON.stringify(size_variants)
-          : size_variants,
+        variants: variants ? JSON.stringify(variants) : variants,
+        sub_images_url,
       });
       res.status(StatusCodes.OK).json({
         status: "OK",
@@ -84,6 +80,23 @@ export default class ProductController {
         status: "OK",
         message: "Get one product successfully!!",
         data: product,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  public searchProducts = async (req, res, next) => {
+    try {
+      const { name, minPrice, maxPrice } = req?.query;
+      const searchProducts = await this.productService.searchProducts({
+        name,
+        minPrice,
+        maxPrice,
+      });
+      res.status(StatusCodes.OK).json({
+        status: "OK",
+        message: "Search products successfully!!",
+        data: searchProducts,
       });
     } catch (error) {
       next(error);
@@ -142,8 +155,7 @@ export default class ProductController {
         category_name,
         rating,
         image_url,
-        color_variants,
-        size_variants,
+        variants,
         tags,
       } = req.body;
       const product = await this.productService.updateOneProduct(id, {
@@ -155,8 +167,7 @@ export default class ProductController {
         category_name,
         rating,
         image_url,
-        color_variants: JSON.stringify(color_variants),
-        size_variants: JSON.stringify(size_variants),
+        variants: JSON.stringify(variants),
         tags,
       });
       res.status(StatusCodes.OK).json({
@@ -197,6 +208,25 @@ export default class ProductController {
         status: "OK",
         message: "Toggle status one product successfully!!",
         data: product,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  public getProductByCategory = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { categoryId } = req.params;
+      const products = await this.productService.getProductByCategory(
+        parseInt(categoryId)
+      );
+      res.status(StatusCodes.OK).json({
+        status: "OK",
+        message: "Get product by category successfully!!",
+        data: products,
       });
     } catch (error) {
       next(error);

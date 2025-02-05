@@ -1,5 +1,4 @@
 import ProductRepository from "../repositories/product.repository";
-import { Product } from "../types/product.type";
 
 export default class ProductService {
   private readonly repository: ProductRepository;
@@ -15,9 +14,9 @@ export default class ProductService {
     category_name,
     rating,
     image_url,
-    color_variants,
-    size_variants,
+    variants,
     tags,
+    sub_images_url,
   }: {
     name: string;
     description?: string;
@@ -27,9 +26,9 @@ export default class ProductService {
     category_name: string;
     rating?: number;
     image_url?: string;
-    color_variants?: string;
-    size_variants?: string;
+    variants?: string;
     tags?: string;
+    sub_images_url?: string[];
   }) => {
     try {
       const productCreated = await this.repository.createProduct({
@@ -41,9 +40,9 @@ export default class ProductService {
         category_name,
         rating,
         image_url,
-        color_variants,
-        size_variants,
+        variants,
         tags,
+        sub_images_url,
       });
       return productCreated;
     } catch (error) {
@@ -58,7 +57,7 @@ export default class ProductService {
       throw error;
     }
   };
-  public getOneProduct = async (id?: Number) => {
+  public getOneProduct = async (id?: number) => {
     try {
       const product = await this.repository.getOneProduct(id);
       return product;
@@ -66,7 +65,19 @@ export default class ProductService {
       throw error;
     }
   };
-  public deleteOneProduct = async (id: Number) => {
+  public searchProducts = async ({ name, minPrice, maxPrice }) => {
+    try {
+      const searchProducts = await this.repository.searchProducts({
+        name,
+        minPrice,
+        maxPrice,
+      });
+      return searchProducts;
+    } catch (error) {
+      throw error;
+    }
+  };
+  public deleteOneProduct = async (id: number) => {
     try {
       const product = await this.repository.deleteOneProduct(id);
       return product;
@@ -83,7 +94,7 @@ export default class ProductService {
     }
   };
   public updateOneProduct = async (
-    id: Number,
+    id: number,
     {
       name,
       description,
@@ -93,8 +104,7 @@ export default class ProductService {
       category_name,
       rating,
       image_url,
-      color_variants,
-      size_variants,
+      variants,
       tags,
     }: {
       name?: string;
@@ -105,8 +115,7 @@ export default class ProductService {
       category_name?: string;
       rating?: number;
       image_url?: string;
-      color_variants?: string;
-      size_variants?: string;
+      variants?: string;
       tags?: string;
     }
   ) => {
@@ -120,8 +129,7 @@ export default class ProductService {
         category_name,
         rating,
         image_url,
-        color_variants,
-        size_variants,
+        variants,
         tags,
       });
       return product;
@@ -137,10 +145,18 @@ export default class ProductService {
       throw error;
     }
   };
-  public toggleStatusProduct = async (id: Number) => {
+  public toggleStatusProduct = async (id: number) => {
     try {
       const product = await this.repository.toggleStatusProduct(id);
       return product;
+    } catch (error) {
+      throw error;
+    }
+  };
+  public getProductByCategory = async (categoryId: number) => {
+    try {
+      const products = await this.repository.getProductByCategory(categoryId);
+      return products;
     } catch (error) {
       throw error;
     }

@@ -1,6 +1,28 @@
 import { Database } from "../lib/database/database";
-import { Product } from "../types/product.type";
+import InsertBuilder from "../helper/builder/sql_builder/insert_builder.helper";
+import SelectBuilder from "../helper/builder/sql_builder/select_builder.helper";
+
 export default class ProductRepository {
+  private getSubImagesProduct = async (productId: number) => {
+    const selectSubImagesProductSql = SelectBuilder.getInstance()
+      .select(["image_url"])
+      .from("product_images")
+      .where(`product_id=${productId}`)
+      .buildSqlServerQuery();
+
+    const subProductImages = await Database.mssql().query(
+      selectSubImagesProductSql
+    );
+    return subProductImages.map((item) => item?.image_url);
+  };
+
+  private parseProductVariants = (product: any) => {
+    return {
+      ...product,
+      variants: JSON.parse(product.variants),
+    };
+  };
+
   public createProduct = async ({
     name,
     description,
@@ -10,9 +32,9 @@ export default class ProductRepository {
     category_name,
     rating,
     image_url,
-    color_variants,
-    size_variants,
+    variants,
     tags,
+    sub_images_url,
   }: {
     name: string;
     description?: string;
@@ -22,9 +44,9 @@ export default class ProductRepository {
     category_name: string;
     rating?: number;
     image_url?: string;
-    color_variants?: string;
-    size_variants?: string;
+    variants?: string;
     tags?: string;
+    sub_images_url?: string[];
   }) => {
     try {
       const productCreated = await Database.mssql().execProc("CreateProduct", {
@@ -36,54 +58,90 @@ export default class ProductRepository {
         category_name,
         rating,
         image_url,
-        color_variants,
-        size_variants,
+        variants,
         tags,
       });
-      return productCreated;
+
+      if (productCreated && sub_images_url) {
+        const valuesInsert = sub_images_url?.map((url) => {
+          return [productCreated?.id, url];
+        });
+
+        const insertToProductSubImagesSql = InsertBuilder.getInstance()
+          .into("product_images")
+          .column(["product_id", "image_url"])
+          .values(valuesInsert)
+          .buildSqlServerInsert();
+
+        await Database.mssql().query(insertToProductSubImagesSql);
+
+        const subImagesProducts = await this.getSubImagesProduct(
+          productCreated.id
+        );
+
+        return {
+          ...productCreated,
+          sub_images_products: subImagesProducts,
+        };
+      }
+      return null;
     } catch (error) {
       throw error;
     }
   };
-  public getOneProduct = async (id?: Number) => {
+
+  public getOneProduct = async (id?: number) => {
     try {
       const product = await Database.mssql().execProc("FindUniqueProduct", {
         id: id,
       });
+
+      const subImagesProducts = await this.getSubImagesProduct(product.id);
+
       return {
-        ...product,
-        color_variants: JSON.parse(product.color_variants),
-        size_variants: JSON.parse(product.size_variants),
+        ...this.parseProductVariants(product),
+        sub_images_products: subImagesProducts,
       };
     } catch (error) {
       throw error;
     }
   };
+
   public getManyProducts = async () => {
     try {
-      let products = await Database.mssql().execProc("FindManyProducts");
+      let products = await Database.mssql().execProc("FindManyProducts", {});
+
       if (products && products.length > 0) {
-        products = products.map((product) => {
-          return {
-            ...product,
-            color_variants: JSON.parse(product.color_variants),
-            size_variants: JSON.parse(product.size_variants),
-          };
-        });
+        products = products.map(this.parseProductVariants);
       }
+
       if (products && !Array.isArray(products)) {
-        return {
-          ...products,
-          color_variants: JSON.parse(products.color_variants),
-          size_variants: JSON.parse(products.size_variants),
-        };
+        return this.parseProductVariants(products);
       }
+
       return products;
     } catch (error) {
       throw error;
     }
   };
-  public deleteOneProduct = async (id: Number) => {
+
+  public searchProducts = async ({ name, minPrice, maxPrice }) => {
+    try {
+      const searchProducts = await Database.mssql().execProc(
+        "FindManyProducts",
+        {
+          name,
+          min_price: minPrice,
+          max_price: maxPrice,
+        }
+      );
+      return searchProducts;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  public deleteOneProduct = async (id: number) => {
     try {
       const productDeleted = await Database.mssql().execProc("DeleteProduct", {
         product_id: id,
@@ -93,7 +151,7 @@ export default class ProductRepository {
       throw error;
     }
   };
-  //pending
+
   public deleteManyProducts = async () => {
     try {
       const products = await Database.mssql().execProc("FindUniqueProduct");
@@ -102,9 +160,9 @@ export default class ProductRepository {
       throw error;
     }
   };
-  //pending
+
   public updateOneProduct = async (
-    id: Number,
+    id: number,
     {
       name,
       description,
@@ -114,8 +172,7 @@ export default class ProductRepository {
       category_name,
       rating,
       image_url,
-      color_variants,
-      size_variants,
+      variants,
       tags,
     }: {
       name?: string;
@@ -126,8 +183,7 @@ export default class ProductRepository {
       category_name?: string;
       rating?: number;
       image_url?: string;
-      color_variants?: string;
-      size_variants?: string;
+      variants?: string;
       tags?: string;
     }
   ) => {
@@ -142,16 +198,23 @@ export default class ProductRepository {
         category_name,
         rating,
         image_url,
-        color_variants,
-        size_variants,
+        variants,
         tags,
       });
-      return productUpdated;
+
+      const subImagesProducts = await this.getSubImagesProduct(
+        productUpdated.id
+      );
+
+      return {
+        ...this.parseProductVariants(productUpdated),
+        sub_images_products: subImagesProducts,
+      };
     } catch (error) {
       throw error;
     }
   };
-  //pending
+
   public updateManyProducts = async () => {
     try {
       const products = await Database.mssql().execProc("FindUniqueProduct");
@@ -160,14 +223,29 @@ export default class ProductRepository {
       throw error;
     }
   };
-  //pending
-  public toggleStatusProduct = async (id: Number) => {
+
+  public toggleStatusProduct = async (id: number) => {
     try {
       const product = await Database.mssql().execProc("UpdateProduct", {
         product_id: id,
         toggle_active: true,
       });
       return product;
+    } catch (error) {
+      throw error;
+    }
+  };
+  public getProductByCategory = async (categoryId: number) => {
+    try {
+      const getProductByCategorySql = `
+        SELECT * FROM products 
+        WHERE category_id = @categoryId
+        OR category_id IN (SELECT parent_id FROM categories WHERE id = @categoryId)
+      `;
+      const products = await Database.mssql().query(getProductByCategorySql, {
+        categoryId: categoryId,
+      });
+      return products;
     } catch (error) {
       throw error;
     }

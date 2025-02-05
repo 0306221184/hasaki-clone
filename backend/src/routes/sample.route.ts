@@ -3,8 +3,6 @@ import SampleController from "../controllers/sample.controller";
 import { IRoute } from "../interfaces/route.interface";
 import StripeService from "../lib/stripe";
 import { FRONTEND_URL } from "../config/env.config";
-import { session } from "passport";
-
 class SampleRoute implements IRoute {
   public router: Router = Router();
   public controller: SampleController = new SampleController();

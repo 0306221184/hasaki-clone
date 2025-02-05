@@ -111,11 +111,12 @@ export default class AuthRepository {
     avatar = null,
     fullName = null,
     phoneNumber = null,
-    address = null,
     provider = null,
     providerId = null,
     lastLogin = false,
     isEmailVerified = false,
+    gender = null,
+    birthDate = null,
   }: {
     email?: String | null;
     username?: String | null;
@@ -126,11 +127,12 @@ export default class AuthRepository {
     avatar?: String | null;
     fullName?: String | null;
     phoneNumber?: String | null;
-    address?: String | null;
     provider?: String | null;
     providerId?: String | null;
     lastLogin?: Boolean;
     isEmailVerified?: Boolean;
+    gender?: String | null;
+    birthDate?: String | null;
   }): Promise<any> {
     try {
       const createdUser = await Database.mssql().execProc("CreateUser", {
@@ -143,10 +145,11 @@ export default class AuthRepository {
         avatar: avatar,
         full_name: fullName,
         phone_number: phoneNumber,
-        address: address,
         provider: provider,
         provider_id: providerId,
         is_email_verified: isEmailVerified,
+        gender: gender,
+        birth_date: birthDate,
       });
       return createdUser;
     } catch (error) {

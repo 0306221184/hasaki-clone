@@ -46,9 +46,9 @@ export default class InsertBuilder {
   /**
    * Add a single or multiple rows of values for the insert statement
    */
-  public values(...rows: (string | number | null)[][]): this {
+  public values(rows: (string | number | null | any)[][]): this {
     rows.forEach((row) => {
-      if (row.length !== this.columns.length) {
+      if (row?.length !== this.columns.length) {
         throw new Error(
           `Values count (${row.length}) must match columns count (${this.columns.length}).`
         );
@@ -81,7 +81,7 @@ export default class InsertBuilder {
           "(" +
           values
             .map((value) =>
-              value === null
+              value === null || value === undefined
                 ? "NULL"
                 : typeof value === "string"
                 ? `'${value}'`
@@ -93,7 +93,7 @@ export default class InsertBuilder {
       .join(", ");
 
     // Reset the builder state after building the query
-    const query = `INSERT INTO ${this.tableName} (${columnsPart}) VALUES ${valuesPart};`;
+    const query = `INSERT INTO ${this.tableName} (${columnsPart}) VALUES ${valuesPart}; SELECT SCOPE_IDENTITY() AS id;`;
     this.reset();
     return query;
   }

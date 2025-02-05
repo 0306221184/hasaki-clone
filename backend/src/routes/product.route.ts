@@ -1,7 +1,6 @@
 import { Router } from "express";
 import ProductController from "../controllers/product.controller";
 import { IRoute } from "../interfaces/route.interface";
-import AuthMiddleware from "../middlewares/auth.middleware";
 
 class ProductRoute implements IRoute {
   public router: Router = Router();
@@ -16,8 +15,14 @@ class ProductRoute implements IRoute {
     this.router.post("/product", this.controller.createProduct);
     //GET all products
     this.router.get("/product", this.controller.getManyProducts);
+    this.router.get("/search/product", this.controller.searchProducts);
     //GET one product
     this.router.get("/product/:productId", this.controller.getOneProduct);
+    //GET product by category
+    this.router.get(
+      "/product/category/:categoryId",
+      this.controller.getProductByCategory
+    );
     //DELETE many products
     // this.router.delete("/product", this.controller.deleteManyProducts); //pending
     //DELETE one product

@@ -15,4 +15,7 @@ export const {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   FRONTEND_URL,
+  RABBIT_MQ_URL,
+  RESEND_API_KEY,
+  BACKEND_URL,
 } = process.env;
